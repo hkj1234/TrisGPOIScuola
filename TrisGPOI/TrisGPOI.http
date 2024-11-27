@@ -1,0 +1,6 @@
+@TrisGPOI_HostAddress = http://localhost:5280
+
+GET {{TrisGPOI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
