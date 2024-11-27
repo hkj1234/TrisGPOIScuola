@@ -8,5 +8,5 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<DBUser> Customers { get; set; }
+    public DbSet<DBUser> Users { get; set; }
 }

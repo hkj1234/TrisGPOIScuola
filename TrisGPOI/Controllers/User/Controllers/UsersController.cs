@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
+using TrisGPOI.Controllers.User.Entities;
+using TrisGPOI.Core.User.Exceptions;
+using TrisGPOI.Core.User.Interfaces;
 
 namespace TrisGPOI.Controllers.User.Controllers
 {
@@ -14,20 +17,20 @@ namespace TrisGPOI.Controllers.User.Controllers
     [Route("")]
     public class UsersController : ControllerBase
     {
-        private readonly ICustomerManager _customerManager;
-        public UsersController(ICustomerManager customerManager)
+        private readonly IUserManager _userManager;
+        public UsersController(IUserManager customerManager)
         {
-            _customerManager = customerManager;
+            _userManager = customerManager;
         }
 
 
         //Login
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync(CustomerLoginRequest model)
+        public async Task<IActionResult> LoginAsync(UserLoginRequest model)
         {
             try
             {
-                var token = await _customerManager.LoginAsync(model.ToCoreCustomerLogin());
+                var token = await _userManager.LoginAsync(model.ToUserLogin());
                 return Ok(new { token = token });
             }
             catch (WrongEmailOrPasswordException e)
@@ -43,15 +46,11 @@ namespace TrisGPOI.Controllers.User.Controllers
 
         //Register
         [HttpPost("Register")]
-        [SwaggerResponse(StatusCodes.Status200OK, null, null)]
-        [SwaggerResponse(StatusCodes.Status404NotFound, null, null)]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, null, null)]
-        [SwaggerResponse(StatusCodes.Status409Conflict, null, null)]
-        public async Task<IActionResult> RegisterAsync(CustomerRegisterRequest model)
+        public async Task<IActionResult> RegisterAsync(UserRegisterRequest model)
         {
             try
             {
-                await _customerManager.RegisterAsync(model.ToCoreCustomerRegister());
+                await _userManager.RegisterAsync(model.ToUserRegister());
                 return Ok();
             }
             catch(WrongEmailOrPasswordException e)

@@ -1,6 +1,12 @@
-﻿namespace TrisGPOI.Core.User.Interfaces
+﻿using TrisGPOI.Core.User.Entities;
+using TrisGPOI.Database.User.Entities;
+
+namespace TrisGPOI.Core.User.Interfaces
 {
     public interface IUserRepository
     {
+        Task<bool> ExistUser(string emailOrUsername);
+        Task<DBUser> FirstOrDefaultUser(string emailOrUsername);
+        Task AddNewUser(UserRegister model);
     }
 }
