@@ -10,7 +10,7 @@ using TrisGPOI.Controllers.User;
 var builder = WebApplication.CreateBuilder(args);
 
 //for test
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
+//builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 // Add services to the container.
 
@@ -61,9 +61,6 @@ builder.Services
 
 
 var app = builder.Build();
-
-//test
-app.MapGet("/", () => "API Running!");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
