@@ -53,10 +53,6 @@ namespace TrisGPOI.Controllers.User.Controllers
                 await _userManager.RegisterAsync(model.ToUserRegister());
                 return Ok();
             }
-            catch(WrongEmailOrPasswordException e)
-            {
-                return BadRequest(e.Message);
-            }
             catch (ExisitingEmailException e)
             {
                 return Conflict(e.Message);
