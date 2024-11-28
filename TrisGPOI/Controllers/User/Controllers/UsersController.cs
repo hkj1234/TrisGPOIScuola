@@ -51,7 +51,7 @@ namespace TrisGPOI.Controllers.User.Controllers
             try
             {
                 await _userManager.RegisterAsync(model.ToUserRegister());
-                return Ok("ciao");
+                return Ok();
             }
             catch (ExisitingEmailException e)
             {
