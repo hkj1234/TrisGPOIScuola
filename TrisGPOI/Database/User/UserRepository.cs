@@ -33,7 +33,7 @@ namespace TrisGPOI.Database.User
             }
             return ris;
         }
-        public async Task AddNewUser(UserRegister model)
+        public async Task AddNewUserAsync(UserRegister model)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             DBUser newUser = new DBUser
@@ -41,8 +41,21 @@ namespace TrisGPOI.Database.User
                 Email = model.Email,
                 Username = model.Username,
                 Password = model.Password,
+                IsActive = false
             };
             _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+        }
+        public async Task SetActiveUser(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.IsActive = true;
+            _context.Users.Update(User);
             await _context.SaveChangesAsync();
         }
     }

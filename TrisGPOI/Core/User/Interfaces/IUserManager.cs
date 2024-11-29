@@ -6,5 +6,6 @@ namespace TrisGPOI.Core.User.Interfaces
     {
         Task RegisterAsync(UserRegister model);
         Task<string?> LoginAsync(UserLogin model);
+        Task<string?> VerifyOTP(string otp, string email);
     }
 }

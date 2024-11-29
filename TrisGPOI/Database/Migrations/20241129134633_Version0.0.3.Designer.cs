@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129134633_Version0.0.3")]
+    partial class Version003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +24,7 @@ namespace TrisGPOI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
+            modelBuilder.Entity("TrisGPOI.Database.Mail.Entities.DBOtpEntity", b =>
                 {
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
@@ -35,16 +38,13 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("OTP");
+                    b.ToTable("OPT");
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>
                 {
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Password")
                         .IsRequired()

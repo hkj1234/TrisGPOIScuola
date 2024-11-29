@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using TrisGPOI.Controllers.User.Entities;
+using TrisGPOI.Core.OTP.Exceptions;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
 
@@ -26,7 +27,7 @@ namespace TrisGPOI.Controllers.User.Controllers
 
         //Login
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync(UserLoginRequest model)
+        public async Task<IActionResult> LoginAsync([FromBody]UserLoginRequest model)
         {
             try
             {
@@ -37,6 +38,10 @@ namespace TrisGPOI.Controllers.User.Controllers
             {
                 return BadRequest(e.Message);
             }
+            catch (AccountNotActivedException e)
+            {
+                return StatusCode(406, e.Message);
+            }
             catch (Exception e)
             {
                 return NotFound($"Resource not found {e.Message}");
@@ -46,7 +51,7 @@ namespace TrisGPOI.Controllers.User.Controllers
 
         //Register
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync(UserRegisterRequest model)
+        public async Task<IActionResult> RegisterAsync([FromBody] UserRegisterRequest model)
         {
             try
             {
@@ -56,6 +61,26 @@ namespace TrisGPOI.Controllers.User.Controllers
             catch (ExisitingEmailException e)
             {
                 return Conflict(e.Message);
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
+
+
+        //VerifyOTP
+        [HttpPost("VerifyOTP")]
+        public async Task<IActionResult> VerifyOTP([FromBody] VerifyOTPRequest model)
+        {
+            try
+            {
+                string token = await _userManager.VerifyOTP(model.OTP, model.email);
+                return Ok(new { token = token });
+            }
+            catch (WrongEmailOrOTPExeption e)
+            {
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {

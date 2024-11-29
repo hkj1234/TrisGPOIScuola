@@ -1,4 +1,7 @@
-﻿using TrisGPOI.Core.JWT.Interfaces;
+﻿using System.Text.RegularExpressions;
+using TrisGPOI.Core.JWT.Interfaces;
+using TrisGPOI.Core.Mail.Interfaces;
+using TrisGPOI.Core.OTP.Interfaces;
 using TrisGPOI.Core.User.Entities;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
@@ -9,10 +12,14 @@ namespace TrisGPOI.Core.User
     {
         private readonly IJWTManager _jWTManager;
         private readonly IUserRepository _userRepository;
-        public UserManager(IJWTManager jWTManager, IUserRepository customersRepository)
+        private readonly IMailManager _mailManager;
+        private readonly IOTPManager _oTPManager;
+        public UserManager(IJWTManager jWTManager, IUserRepository customersRepository, IMailManager mailManager, IOTPManager oTPManager)
         {
             _jWTManager = jWTManager;
             _userRepository = customersRepository;
+            _mailManager = mailManager;
+            _oTPManager = oTPManager;
         }
         public async Task RegisterAsync(UserRegister model)
         {
@@ -21,7 +28,12 @@ namespace TrisGPOI.Core.User
             {
                 throw new ExisitingEmailException();
             }
-            await _userRepository.AddNewUser(model);
+            if (!(CheckPassword(model.Password) && CheckUsername(model.Username) && CheckEmail(model.Email)))
+            {
+                throw new MalformedDataException();
+            }
+            await _mailManager.SendOtpEmailAsync(model.Email);
+            await _userRepository.AddNewUserAsync(model);
         }
         public async Task<string?> LoginAsync(UserLogin model)
         {
@@ -30,8 +42,38 @@ namespace TrisGPOI.Core.User
             {
                 throw new WrongEmailOrPasswordException();
             }
+            if (!customer.IsActive)
+            {
+                throw new AccountNotActivedException();
+            }
 
             return _jWTManager.JWTGenerate(customer.Email);
+        }
+        public async Task<string?> VerifyOTP(string otp, string email)
+        {
+            await _oTPManager.CheckOTP(email, otp);
+
+            await _userRepository.SetActiveUser(email);
+
+            return _jWTManager.JWTGenerate(email);
+        }
+        public bool CheckPassword(string password)
+        {
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$";
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(password);
+        }
+        public bool CheckUsername(string username)
+        {
+            string pattern = @"^[a-zA-Z0-9_-]{3,}$";
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(username);
+        }
+        public bool CheckEmail(string email)
+        {
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(email);
         }
     }
 }

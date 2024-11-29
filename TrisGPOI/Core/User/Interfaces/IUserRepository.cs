@@ -7,6 +7,7 @@ namespace TrisGPOI.Core.User.Interfaces
     {
         Task<bool> ExistUser(string emailOrUsername);
         Task<DBUser> FirstOrDefaultUser(string emailOrUsername);
-        Task AddNewUser(UserRegister model);
+        Task AddNewUserAsync(UserRegister model);
+        Task SetActiveUser(string email);
     }
 }
