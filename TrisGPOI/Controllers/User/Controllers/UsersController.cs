@@ -87,5 +87,25 @@ namespace TrisGPOI.Controllers.User.Controllers
                 return NotFound($"Resource not found {e.Message}");
             }
         }
+
+
+        //VerifyOTP
+        [HttpPost("PasswordDimenticata")]
+        public async Task<IActionResult> PasswordDimenticata([FromBody] PasswordDimenticataRequest model)
+        {
+            try
+            {
+                await _userManager.PasswordDimenticata(model.Email);
+                return Ok();
+            }
+            catch(NotExisitingEmailException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch(Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
     }
 }

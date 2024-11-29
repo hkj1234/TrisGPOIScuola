@@ -9,5 +9,6 @@ namespace TrisGPOI.Core.User.Interfaces
         Task<DBUser> FirstOrDefaultUser(string emailOrUsername);
         Task AddNewUserAsync(UserRegister model);
         Task SetActiveUser(string email);
+        Task ChangeUserPassword(string email, string password);
     }
 }

@@ -41,12 +41,20 @@ namespace TrisGPOI.Core.Mail
         public async Task SendOtpEmailAsync(string toEmail)
         {
             var otp = _oTPManager.GenerateOtp();
-            var subject = " Verifica il tuo account con il codice OTP";
+            var subject = "Verifica il tuo account con il codice OTP";
             var message = $"Gentile {toEmail},\r\n\r\nPer completare la verifica del tuo account, utilizza il seguente codice OTP (One-Time Password):\r\n\r\n{otp}\r\n\r\nIl codice è valido per 10 minuti. Ti preghiamo di non condividere questo codice con nessuno per motivi di sicurezza.\r\n\r\nSe non hai richiesto questo codice, ignora questa email.\r\n\r\nGrazie per aver scelto il nostro servizio!\r\n\r\nCordiali saluti,\r\nXOregion\r\n";
 
             await SendEmailAsync(toEmail, subject, message);
 
             await _oTPManager.AddNewOTP(toEmail, otp);
+        }
+
+        public async Task SendPasswordDimenticataEmailAsync(string toEmail, string password)
+        {
+            var subject = "Avviso di modifica della password";
+            var message = $"Gentile {toEmail},\r\n\r\nAbbiamo ricevuto una richiesta per reimpostare la tua password. La tua password è stata cambiata con successo. Se non hai richiesto questa modifica, ti preghiamo di contattarci immediatamente.\r\n\r\nNuova password: {password}\r\n\r\nSe hai richiesto tu stesso la modifica, non è necessaria alcuna azione ulteriore. Tuttavia, ti consigliamo di mantenere le tue informazioni di accesso sicure e di non condividerle con nessuno.\r\n\r\nSe hai domande o hai bisogno di assistenza, non esitare a contattarci.\r\n\r\nGrazie per la tua attenzione.\r\n\r\nCordiali saluti,\r\nXOregion\r\n";
+
+            await SendEmailAsync(toEmail, subject, message);
         }
     }
 }

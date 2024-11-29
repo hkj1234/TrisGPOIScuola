@@ -16,16 +16,16 @@ namespace TrisGPOI.Database.User
         public async Task<bool> ExistUser(string emailOrUsername)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.Users.AnyAsync(x => x.Email == emailOrUsername) ||
-                await _context.Users.AnyAsync(x => x.Username == emailOrUsername);
+            return await _context.Users.AnyAsync(x => x.Email == emailOrUsername && x.IsActive == true) ||
+                await _context.Users.AnyAsync(x => x.Username == emailOrUsername && x.IsActive == true);
         }
         public async Task<DBUser> FirstOrDefaultUser(string emailOrUsername)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            DBUser? ris = await _context.Users.FirstOrDefaultAsync(x => x.Email == emailOrUsername);
+            DBUser? ris = await _context.Users.FirstOrDefaultAsync(x => x.Email == emailOrUsername && x.IsActive == true);
             if (ris == null)
             {
-                ris = await _context.Users.FirstOrDefaultAsync(x => x.Username == emailOrUsername);
+                ris = await _context.Users.FirstOrDefaultAsync(x => x.Username == emailOrUsername && x.IsActive == true);
             }
             if (ris == null)
             {
@@ -49,12 +49,24 @@ namespace TrisGPOI.Database.User
         public async Task SetActiveUser(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            DBUser User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
             if (User == null)
             {
                 return;
             }
             User.IsActive = true;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task ChangeUserPassword(string email, string password)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.Password = password;
             _context.Users.Update(User);
             await _context.SaveChangesAsync();
         }

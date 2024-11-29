@@ -75,5 +75,28 @@ namespace TrisGPOI.Core.User
             Regex regex = new Regex(pattern);
             return regex.IsMatch(email);
         }
+        public async Task PasswordDimenticata(string email)
+        {
+            if (!await _userRepository.ExistUser(email))
+            {
+                throw new NotExisitingEmailException();
+            }
+            string PasswordGenerata = GenerateRandomPassword(16);
+            await _mailManager.SendPasswordDimenticataEmailAsync(email, PasswordGenerata);
+            await _userRepository.ChangeUserPassword(email, PasswordGenerata);
+        }
+        public string GenerateRandomPassword(int length)
+        {
+            const string upperChars = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // Esclude 'O' e 'I'
+            const string lowerChars = "abcdefghijkmnopqrstuvwxyz"; // Esclude 'l'
+            const string digits = "0123456789";
+            const string caratteriSpeciali = "@$!%*?&";
+
+            string allChars = upperChars + lowerChars + digits + caratteriSpeciali;
+            Random random = new Random();
+
+            return new string(Enumerable.Repeat(allChars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }
