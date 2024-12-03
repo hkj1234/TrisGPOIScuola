@@ -24,7 +24,7 @@ namespace TrisGPOI.Core.User
         public async Task RegisterAsync(UserRegister model)
         {
             //da fare, va agigunto la roba se controllare username se contien esolo caratteri e numeri
-            if (await _userRepository.ExistUser(model.Email) || await _userRepository.ExistUser(model.Username))
+            if (await _userRepository.ExistActiveUser(model.Email) || await _userRepository.ExistActiveUser(model.Username))
             {
                 throw new ExisitingEmailException();
             }
@@ -32,30 +32,43 @@ namespace TrisGPOI.Core.User
             {
                 throw new MalformedDataException();
             }
-            await _mailManager.SendOtpEmailAsync(model.Email);
-            await _userRepository.AddNewUserAsync(model);
+            await _mailManager.SendRegisterOtpEmailAsync(model.Email);
+
+            if (! await _userRepository.ExistUser(model.Email))
+            {
+                await _userRepository.AddNewUserAsync(model);
+            }
         }
-        public async Task<string?> LoginAsync(UserLogin model)
+        public async Task<string> LoginAsync(UserLogin model)
         {
-            var customer = await _userRepository.FirstOrDefaultUser(model.EmailOrUsername);
+            var customer = await _userRepository.FirstOrDefaultActiveUser(model.EmailOrUsername);
             if (customer == null || customer.Password != model.Password)
             {
                 throw new WrongEmailOrPasswordException();
             }
             if (!customer.IsActive)
             {
+                await _mailManager.SendRegisterOtpEmailAsync(customer.Email);
                 throw new AccountNotActivedException();
             }
 
             return _jWTManager.JWTGenerate(customer.Email);
         }
-        public async Task<string?> VerifyOTP(string otp, string email)
+        public async Task<string> VerifyOTP(string otp, string email)
         {
             await _oTPManager.CheckOTP(email, otp);
 
             await _userRepository.SetActiveUser(email);
 
             return _jWTManager.JWTGenerate(email);
+        }
+        public async Task LoginOTP(string email)
+        {
+            if (! await _userRepository.ExistActiveUser(email))
+            {
+                throw new NotExisitingEmailException();
+            }
+            await _mailManager.SendLoginOtpEmailAsync(email);
         }
         public bool CheckPassword(string password)
         {
@@ -77,7 +90,7 @@ namespace TrisGPOI.Core.User
         }
         public async Task PasswordDimenticata(string email)
         {
-            if (!await _userRepository.ExistUser(email))
+            if (!await _userRepository.ExistActiveUser(email))
             {
                 throw new NotExisitingEmailException();
             }
@@ -90,7 +103,7 @@ namespace TrisGPOI.Core.User
             const string upperChars = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // Esclude 'O' e 'I'
             const string lowerChars = "abcdefghijkmnopqrstuvwxyz"; // Esclude 'l'
             const string digits = "0123456789";
-            const string caratteriSpeciali = "@$!%*?&";
+            const string caratteriSpeciali = "@$!%*?&.,-_\"£&/()=+";
 
             string allChars = upperChars + lowerChars + digits + caratteriSpeciali;
             Random random = new Random();

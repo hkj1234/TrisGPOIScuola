@@ -13,13 +13,19 @@ namespace TrisGPOI.Database.User
         {
             _dbContextFactory = dbContextFactory;
         }
-        public async Task<bool> ExistUser(string emailOrUsername)
+        public async Task<bool> ExistActiveUser(string emailOrUsername)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             return await _context.Users.AnyAsync(x => x.Email == emailOrUsername && x.IsActive == true) ||
                 await _context.Users.AnyAsync(x => x.Username == emailOrUsername && x.IsActive == true);
         }
-        public async Task<DBUser> FirstOrDefaultUser(string emailOrUsername)
+        public async Task<bool> ExistUser(string emailOrUsername)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            return await _context.Users.AnyAsync(x => x.Email == emailOrUsername) ||
+                await _context.Users.AnyAsync(x => x.Username == emailOrUsername);
+        }
+        public async Task<DBUser> FirstOrDefaultActiveUser(string emailOrUsername)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             DBUser? ris = await _context.Users.FirstOrDefaultAsync(x => x.Email == emailOrUsername && x.IsActive == true);

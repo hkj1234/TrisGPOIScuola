@@ -38,11 +38,22 @@ namespace TrisGPOI.Core.Mail
             }
         }
 
-        public async Task SendOtpEmailAsync(string toEmail)
+        public async Task SendRegisterOtpEmailAsync(string toEmail)
         {
             var otp = _oTPManager.GenerateOtp();
             var subject = "Verifica il tuo account con il codice OTP";
             var message = $"Gentile {toEmail},\r\n\r\nPer completare la verifica del tuo account, utilizza il seguente codice OTP (One-Time Password):\r\n\r\n{otp}\r\n\r\nIl codice è valido per 10 minuti. Ti preghiamo di non condividere questo codice con nessuno per motivi di sicurezza.\r\n\r\nSe non hai richiesto questo codice, ignora questa email.\r\n\r\nGrazie per aver scelto il nostro servizio!\r\n\r\nCordiali saluti,\r\nXOregion\r\n";
+
+            await SendEmailAsync(toEmail, subject, message);
+
+            await _oTPManager.AddNewOTP(toEmail, otp);
+        }
+
+        public async Task SendLoginOtpEmailAsync(string toEmail)
+        {
+            var otp = _oTPManager.GenerateOtp();
+            var subject = "Codice OTP per accedere al tuo account";
+            var message = $"Gentile {toEmail},\r\n\r\nUtilizza il seguente codice OTP per accedere al tuo account:\r\n\r\n{otp}\r\n\r\nIl codice è valido per 10 minuti. Non condividere questo codice con nessuno.\r\n\r\nSe non hai richiesto questo codice, ignora questa email.\r\n\r\nCordiali saluti,\r\nXOregion\r\n";
 
             await SendEmailAsync(toEmail, subject, message);
 

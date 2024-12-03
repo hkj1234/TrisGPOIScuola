@@ -5,8 +5,9 @@ namespace TrisGPOI.Core.User.Interfaces
     public interface IUserManager
     {
         Task RegisterAsync(UserRegister model);
-        Task<string?> LoginAsync(UserLogin model);
-        Task<string?> VerifyOTP(string otp, string email);
+        Task<string> LoginAsync(UserLogin model);
+        Task<string> VerifyOTP(string otp, string email);
         Task PasswordDimenticata(string email);
+        Task LoginOTP(string email);
     }
 }

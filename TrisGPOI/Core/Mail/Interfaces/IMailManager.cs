@@ -2,7 +2,8 @@
 {
     public interface IMailManager
     {
-        Task SendOtpEmailAsync(string toEmail);
+        Task SendRegisterOtpEmailAsync(string toEmail);
         Task SendPasswordDimenticataEmailAsync(string toEmail, string password);
+        Task SendLoginOtpEmailAsync(string toEmail);
     }
 }
