@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TrisGPOI.Database.Game.Entities
 {
@@ -8,7 +9,7 @@ namespace TrisGPOI.Database.Game.Entities
         public int Id { get; set; }
         public string GameType {  get; set; }
         public string Player1 { get; set; }
-        public string Player2 { get; set; }
+        public string? Player2 { get; set; }
         public string Board { get; set; } // Rappresentazione del tabellone
         public string CurrentPlayer { get; set; }
         public DateTime LastMoveTime { get; set; }

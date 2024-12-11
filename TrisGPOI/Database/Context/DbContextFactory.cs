@@ -18,7 +18,7 @@ namespace TrisGPOI.Database.Context
 
             optionsBuilder
                 .UseMySql(connectionString, 
-                new MySqlServerVersion(new Version(8, 0, 40)));
+                new MySqlServerVersion(new Version(5, 5, 62)));
 
             var dbContext = new ApplicationDbContext(optionsBuilder.Options);
 

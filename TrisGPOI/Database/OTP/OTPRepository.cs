@@ -46,7 +46,7 @@ namespace TrisGPOI.Database.OTP
         public async Task<bool> CheckOTP(string email, string otp)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return _context.OTP.Any(x => x.Email == email && x.ExpiryTime >= DateTime.Now && x.OtpCode == otp);
+            return _context.OTP.Any(x => x.Email == email && x.ExpiryTime >= DateTime.UtcNow && x.OtpCode == otp);
         }
     }
 }

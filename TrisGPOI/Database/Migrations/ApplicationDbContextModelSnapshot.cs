@@ -45,14 +45,13 @@ namespace TrisGPOI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("LastMoveTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Player1")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Player2")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
@@ -63,10 +62,10 @@ namespace TrisGPOI.Migrations
             modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
                 {
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("OtpCode")
                         .IsRequired()
@@ -80,7 +79,7 @@ namespace TrisGPOI.Migrations
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>
                 {
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");

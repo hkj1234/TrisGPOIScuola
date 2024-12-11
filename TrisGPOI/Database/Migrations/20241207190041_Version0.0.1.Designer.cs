@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129145549_Version0.0.4")]
-    partial class Version004
+    [Migration("20241207190041_Version0.0.1")]
+    partial class Version001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,13 +24,51 @@ namespace TrisGPOI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
+            modelBuilder.Entity("TrisGPOI.Database.Game.Entities.DBGame", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Board")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CurrentPlayer")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GameType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsFinished")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("LastMoveTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Player1")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Player2")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Game");
+                });
+
             modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
                 {
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime");
 
                     b.Property<string>("OtpCode")
                         .IsRequired()
@@ -38,13 +76,13 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("OPT");
+                    b.ToTable("OTP");
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>
                 {
                     b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(95)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");

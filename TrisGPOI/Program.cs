@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using TrisGPOI.Database.Context;
 using TrisGPOI;
 using TrisGPOI.Controllers.User;
+using TrisGPOI.Controllers.TrisNormale;
+using TrisGPOI.Hubs.Game;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 40))
+        new MySqlServerVersion(new Version(5, 5, 62))
     )
 );
 
@@ -38,7 +41,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 #pragma warning disable 8602, 8604
 var tokenOptions = builder.Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 var key = Encoding.ASCII.GetBytes(tokenOptions.Secret);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -51,13 +58,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = tokenOptions.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(key),
         };
+
+        // Abilita il supporto per SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                // Controlla che sia una richiesta SignalR
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/gameHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 #pragma warning restore 8602, 8604
+
+//per mandare la notifica dal server al client
+builder.Services.AddSignalR();
 
 //DE
 builder.Services
     .AddCustomer()
+    .AddTrisNormale()
     .AddContext();
+
 
 
 var app = builder.Build();
@@ -76,5 +106,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<TrisNormaleHub>("Normal"); // Mappa l'hub SignalR
 
 app.Run();
