@@ -22,9 +22,17 @@ namespace TrisGPOI.Hubs.Game
         }
         public override async Task OnConnectedAsync()
         {
+            var email = Context.User?.Identity?.Name;
             try
             {
-                var email = Context.User?.Identity?.Name;
+                await _gameManager.JoinGame(email, "Normal");
+            }
+            catch(Exception e)
+            {
+            }
+
+            try
+            {
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 string connectionId = Context.ConnectionId;
             
@@ -34,6 +42,7 @@ namespace TrisGPOI.Hubs.Game
                     // Aggiungi la nuova connessione
                     await Groups.AddToGroupAsync(connectionId, groupName);
                     await base.OnConnectedAsync();
+                    await Clients.Group(groupName).SendAsync("Connection", email);
                 }
                 else
                 {
@@ -54,6 +63,10 @@ namespace TrisGPOI.Hubs.Game
                 var email = Context.User?.Identity?.Name;
                 await _gameManager.CancelSearchGame(email);
                 await base.OnDisconnectedAsync(exception);
+
+                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
+                string groupName = game.Id.ToString();
+                await Clients.Group(groupName).SendAsync("Disconnection", email);
             }
             catch (Exception ex)
             {
