@@ -43,6 +43,7 @@ namespace TrisGPOI.Hubs.Game
                     await Groups.AddToGroupAsync(connectionId, groupName);
                     await base.OnConnectedAsync();
                     await Clients.Group(groupName).SendAsync("Connection", email);
+                    await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
                 }
                 else
                 {
