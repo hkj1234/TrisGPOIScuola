@@ -23,7 +23,6 @@ namespace TrisGPOI.Core.User
         }
         public async Task RegisterAsync(UserRegister model)
         {
-            //da fare, va agigunto la roba se controllare username se contien esolo caratteri e numeri
             if (await _userRepository.ExistActiveUser(model.Email) || await _userRepository.ExistActiveUser(model.Username))
             {
                 throw new ExisitingEmailException();
@@ -72,7 +71,7 @@ namespace TrisGPOI.Core.User
         }
         public bool CheckPassword(string password)
         {
-            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$";
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,])[A-Za-z\d@$!%*?&.,]{8,}$";
             Regex regex = new Regex(pattern);
             return regex.IsMatch(password);
         }

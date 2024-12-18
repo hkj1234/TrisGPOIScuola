@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241207190041_Version0.0.1")]
+    [Migration("20241214195302_Version0.0.1")]
     partial class Version001
     {
         /// <inheritdoc />

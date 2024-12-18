@@ -1,22 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using TrisGPOI.Core.Game;
-using TrisGPOI.Core.Game.Entities;
 using TrisGPOI.Core.Game.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TrisGPOI.Hubs.Game
 {
     [Authorize]
-    public class TrisNormaleHub : Hub
+    public class TrisNormaleCPUHub : Hub
     {
         private readonly IGameManager _gameManager;
-        public TrisNormaleHub(IGameManager gameManager)
+        public TrisNormaleCPUHub(IGameManager gameManager)
         {
             _gameManager = gameManager;
         }
@@ -25,18 +17,10 @@ namespace TrisGPOI.Hubs.Game
             var email = Context.User?.Identity?.Name;
             try
             {
-                await _gameManager.JoinGame(email, "Normal");
-            }
-            catch(Exception e)
-            {
-            }
-
-            try
-            {
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 string connectionId = Context.ConnectionId;
 
-                if (game != null && game.GameType == "Normal" && ( game.Player2 == null || game.Player2.Contains('@')))
+                if (game != null && game.GameType == "Normal" && (game.Player2 != null && ! game.Player2.Contains('@')))
                 {
                     string groupName = game.Id.ToString();
                     // Aggiungi la nuova connessione
@@ -47,11 +31,12 @@ namespace TrisGPOI.Hubs.Game
                 }
                 else
                 {
-                    Context.Abort();
+                    await base.OnConnectedAsync();
                 }
             }
             catch (Exception ex)
             {
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
                 Context.Abort();
             }
         }
@@ -62,12 +47,12 @@ namespace TrisGPOI.Hubs.Game
             {
                 var email = Context.User?.Identity?.Name;
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
-                await _gameManager.CancelSearchGame(email);
                 if (game != null)
                 {
                     string groupName = game.Id.ToString();
                     await Clients.Group(groupName).SendAsync("Disconnection", email);
                 }
+                await _gameManager.CancelSearchGame(email);
                 await base.OnDisconnectedAsync(exception);
             }
             catch (Exception ex)
@@ -75,6 +60,32 @@ namespace TrisGPOI.Hubs.Game
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }
         }
+
+        public async Task PlayWithCPU(string Difficult)
+        {
+            try
+            {
+                var email = Context.User?.Identity?.Name;
+                await _gameManager.PlayWithCPU(email, "Normal", Difficult);
+
+                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
+                string connectionId = Context.ConnectionId;
+
+                if (game != null && game.GameType == "Normal" && (game.Player2 != null && !game.Player2.Contains('@')))
+                {
+                    string groupName = game.Id.ToString();
+                    // Aggiungi la nuova connessione
+                    await Groups.AddToGroupAsync(connectionId, groupName);
+                    await Clients.Group(groupName).SendAsync("Connection", email);
+                    await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+            }
+        }
+
         public async Task SendMove(int position)
         {
             try
@@ -85,20 +96,28 @@ namespace TrisGPOI.Hubs.Game
                 string groupName = game.Id.ToString();
                 // Invia la mossa a tutti i client
                 await Clients.Group(groupName).SendAsync("ReceiveMove", board);
+
+                //se il giocatore vince manda un messaggio
                 if (board.Victory != '-')
                 {
                     await Clients.Group(groupName).SendAsync("Winning", email);
+                }
+                else if ((!game.Player2.Contains(value: "@")))
+                {
+                    board = await _gameManager.CPUPlayMove(email);
+                    await Clients.Group(groupName).SendAsync("ReceiveMove", board);
+
+                    //se il AI vince manda un messaggio
+                    if (board.Victory != '-')
+                    {
+                        await Clients.Group(groupName).SendAsync("Winning", game.Player2);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
-            }       
+            }
         }
     }
 }
-
-
-
-
-

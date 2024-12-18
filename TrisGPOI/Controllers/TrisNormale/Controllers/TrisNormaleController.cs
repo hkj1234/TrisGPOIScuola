@@ -77,6 +77,13 @@ namespace TrisGPOI.Controllers.TrisNormale.Controllers
                 string groupName = game.Id.ToString();
                 await _hubContext.Clients.Group(groupName).SendAsync("ReceiveMove", board); 
 
+                //se utente due è ai, gioca ai
+                if ((!game.Player2.Contains("@")))
+                {
+                    board = await _gameManager.CPUPlayMove(email);
+                    await _hubContext.Clients.Group(groupName).SendAsync("ReceiveMove", board);
+                }
+
                 return Ok(board);
             }
             catch (NoGamePlayingException e)

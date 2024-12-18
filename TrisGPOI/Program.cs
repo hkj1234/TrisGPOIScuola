@@ -108,5 +108,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<TrisNormaleHub>("Normal"); // Mappa l'hub SignalR
+app.MapHub<TrisNormaleCPUHub>("NormalCPU"); 
 
 app.Run();
