@@ -89,8 +89,7 @@ namespace TrisGPOI.Database.Game
             game.Board = board;
 
             //next player
-            if (game.Player2.Contains('@'))
-                game.CurrentPlayer = game.Player1 == email ? game.Player2 : game.Player1;
+            game.CurrentPlayer = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
 
             //aggiornamento tempo
             game.LastMoveTime = DateTime.UtcNow;

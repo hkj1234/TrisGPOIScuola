@@ -9,6 +9,7 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task<BoardInfo> PlayMove(string playerEmail, int position);
         Task JoinGame(string playerEmail, string gameType);
         Task<DBGame?> SearchPlayerPlayingOrWaitingGameAsync(string playerEmail);
+        Task<DBGame?> SearchPlayerPlayingGameAsync(string playerEmail);
         Task CancelSearchGame(string email);
         Task PlayWithCPU(string playerEmail, string type, string difficult);
     }

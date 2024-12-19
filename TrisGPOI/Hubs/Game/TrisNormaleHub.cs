@@ -80,20 +80,32 @@ namespace TrisGPOI.Hubs.Game
             try
             {
                 var email = Context.User?.Identity?.Name;
-                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
+                var game = await _gameManager.SearchPlayerPlayingGameAsync(email);
                 var board = await _gameManager.PlayMove(email, position);
                 string groupName = game.Id.ToString();
                 // Invia la mossa a tutti i client
                 await Clients.Group(groupName).SendAsync("ReceiveMove", board);
-                if (board.Victory != '-')
-                {
-                    await Clients.Group(groupName).SendAsync("Winning", email);
-                }
+
+                await Task.Delay(10);
+
+                await CheckComunicationWinning(board.Victory, email, groupName);
             }
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }       
+        }
+
+        private async Task CheckComunicationWinning(char value, string email, string groupName)
+        {
+            if (value == '0')
+            {
+                await Clients.Group(groupName).SendAsync("Winning", '0');
+            }
+            else if (value != '-')
+            {
+                await Clients.Group(groupName).SendAsync("Winning", email);
+            }
         }
     }
 }

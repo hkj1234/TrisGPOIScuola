@@ -24,7 +24,7 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
                 if (griglia[i] == '-')
                 {
                     griglia[i] = ai;
-                    if (_trisManager.CheckWin(board) == '2')
+                    if (_trisManager.CheckWin(new string(griglia)) == '2')
                     {
                         return i;
                     }
@@ -38,7 +38,7 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
                 if (griglia[i] == '-')
                 {
                     griglia[i] = giocatore;
-                    if (_trisManager.CheckWin(board) == '1')
+                    if (_trisManager.CheckWin(new string(griglia)) == '1')
                     {
                         return i;
                     }

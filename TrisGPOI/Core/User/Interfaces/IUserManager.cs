@@ -1,4 +1,5 @@
 ﻿using TrisGPOI.Core.User.Entities;
+using TrisGPOI.Database.User.Entities;
 
 namespace TrisGPOI.Core.User.Interfaces
 {
@@ -10,5 +11,6 @@ namespace TrisGPOI.Core.User.Interfaces
         Task<string> VerifyOTP(string otp, string email);
         Task PasswordDimenticata(string email);
         Task LoginOTP(string email);
+        Task<UserData> GetUserData(string email);
     }
 }

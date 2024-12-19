@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Hubs.Game
@@ -97,26 +98,37 @@ namespace TrisGPOI.Hubs.Game
                 // Invia la mossa a tutti i client
                 await Clients.Group(groupName).SendAsync("ReceiveMove", board);
 
+                await Task.Delay(10);
+
                 //se il giocatore vince manda un messaggio
-                if (board.Victory != '-')
-                {
-                    await Clients.Group(groupName).SendAsync("Winning", email);
-                }
-                else if ((!game.Player2.Contains(value: "@")))
+                await CheckComunicationWinning(board.Victory, email, groupName);
+
+                if (board.Victory == '-' && (!game.Player2.Contains(value: "@")))
                 {
                     board = await _gameManager.CPUPlayMove(email);
                     await Clients.Group(groupName).SendAsync("ReceiveMove", board);
 
+                    await Task.Delay(10);
+
                     //se il AI vince manda un messaggio
-                    if (board.Victory != '-')
-                    {
-                        await Clients.Group(groupName).SendAsync("Winning", game.Player2);
-                    }
+                    await CheckComunicationWinning(board.Victory, game.Player2, groupName);
                 }
             }
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+            }
+        }
+
+        private async Task CheckComunicationWinning(char value, string email, string groupName)
+        {
+            if (value == '0')
+            {
+                await Clients.Group(groupName).SendAsync("Winning", '0');
+            }
+            else if (value != '-')
+            {
+                await Clients.Group(groupName).SendAsync("Winning", email);
             }
         }
     }

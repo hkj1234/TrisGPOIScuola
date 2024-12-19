@@ -66,8 +66,6 @@ namespace TrisGPOI.Core.Game
 
         public async Task<BoardInfo> CPUPlayMove(string playerEmail)
         {
-            Thread.Sleep(1000);
-
             DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
             if (game == null)
             {
@@ -116,6 +114,12 @@ namespace TrisGPOI.Core.Game
         public async Task<DBGame?> SearchPlayerPlayingOrWaitingGameAsync(string playerEmail)
         {
             DBGame? actualGame = await _gameRepository.SearchPlayerPlayingOrWaitingGame(playerEmail);
+            return actualGame;
+        }
+
+        public async Task<DBGame?> SearchPlayerPlayingGameAsync(string playerEmail)
+        {
+            DBGame? actualGame = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
             return actualGame;
         }
 

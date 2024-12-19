@@ -5,6 +5,7 @@ using TrisGPOI.Core.OTP.Interfaces;
 using TrisGPOI.Core.User.Entities;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Database.User.Entities;
 
 namespace TrisGPOI.Core.User
 {
@@ -117,6 +118,20 @@ namespace TrisGPOI.Core.User
 
             return new string(Enumerable.Repeat(allChars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public async Task<UserData> GetUserData(string email)
+        {
+            var user = await _userRepository.FirstOrDefaultActiveUser(email);
+            if (user == null)
+            {
+                throw new NotExisitingEmailException();
+            }
+            return new UserData
+            {
+                Email = user.Email,
+                Username = user.Username,
+            };
         }
     }
 }

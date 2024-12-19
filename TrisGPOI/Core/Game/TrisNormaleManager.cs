@@ -50,6 +50,11 @@ namespace TrisGPOI.Core.Game
                 }
             }
 
+            if (!board.Contains('-'))
+            {
+                return '0';
+            }
+
             // Nessun vincitore
             return '-';
         }
