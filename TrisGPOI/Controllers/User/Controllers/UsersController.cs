@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -118,6 +119,27 @@ namespace TrisGPOI.Controllers.User.Controllers
                 return Ok();
             }
             catch (WrongEmailOrOTPExeption e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
+
+        //ChangePassword
+        [Authorize]
+        [HttpPut("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest model)
+        {
+            try
+            {
+                var email = User?.Identity?.Name;
+                await _userManager.ChangeUserPassword(email, model.Password);
+                return Ok();
+            }
+            catch (MalformedDataException e)
             {
                 return BadRequest(e.Message);
             }

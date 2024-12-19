@@ -69,6 +69,14 @@ namespace TrisGPOI.Core.User
             }
             await _mailManager.SendLoginOtpEmailAsync(email);
         }
+        public async Task ChangeUserPassword(string email, string password)
+        {
+            if (!(CheckPassword(password)))
+            {
+                throw new MalformedDataException();
+            }
+            await _userRepository.ChangeUserPassword(email, password);
+        }
         public bool CheckPassword(string password)
         {
             string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,])[A-Za-z\d@$!%*?&.,]{8,}$";
