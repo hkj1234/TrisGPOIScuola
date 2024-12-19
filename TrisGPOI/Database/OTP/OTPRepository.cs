@@ -27,6 +27,7 @@ namespace TrisGPOI.Database.OTP
             {   //se esiste aggiorni database
                 DBOtpEntity OTP = await _context.OTP.FirstOrDefaultAsync(x => x.Email == email);
                 OTP.OtpCode = otp;
+                OTP.ExpiryTime = DateTime.UtcNow.AddMinutes(10);
                 _context.OTP.Update(OTP);
                 await _context.SaveChangesAsync();
             }
