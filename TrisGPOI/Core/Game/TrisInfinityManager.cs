@@ -3,7 +3,8 @@ using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Core.Game
 {
-    public class TrisNormaleManager : ITrisManager
+    public class TrisInfinityManager 
+        //: ITrisManager
     {
         public string PlayMove(string board, int position, char simbol)
         {
@@ -62,20 +63,9 @@ namespace TrisGPOI.Core.Game
         {
             return board[position] == '-';
         }
-        public bool IsEmpty(string board)
-        {
-            return ! board.Contains("-");
-        }
         public string CreateEmptyBoard()
         {
-            return new string('-', 9);
-        }
-        public List<int> GetValidPosition(string board)
-        {
-            return board.Select((c, i) => new { c, i })
-                        .Where(x => IsEmptyPosition(board, x.i))
-                        .Select(x => x.i)
-                        .ToList();
+            return new string('-', 18);
         }
     }
 }

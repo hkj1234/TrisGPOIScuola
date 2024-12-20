@@ -10,6 +10,12 @@ namespace TrisGPOI.Core.Game
             {
                 return new TrisNormaleManager();
             }
+            /*
+            else if (type == "Infinity")
+            {
+                return new TrisInfinityManager();
+            }
+            */
             return null;
         }
     }

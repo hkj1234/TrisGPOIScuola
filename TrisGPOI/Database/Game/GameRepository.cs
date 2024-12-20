@@ -12,23 +12,14 @@ namespace TrisGPOI.Database.Game
         {
             _dbContextFactory = dbContextFactory;
         }
-        private string generationEmptyBoard(string typeGame)
-        {
-            if (typeGame == "Normal")
-            {
-                return new string('-', 9);
-            }
-            return new string('-', 9);
-        }
-
-        public async Task StartJoinGame(string typeGame, string emailPlayer1)
+        public async Task StartJoinGame(string typeGame, string emailPlayer1, string emptyBoard)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             DBGame newGame = new DBGame
             {
                 GameType = typeGame,
                 Player1 = emailPlayer1,
-                Board = generationEmptyBoard(typeGame),
+                Board = emptyBoard,
                 CurrentPlayer = emailPlayer1,
                 IsFinished = false,
                 LastMoveTime = DateTime.UtcNow.AddHours(1),
@@ -36,7 +27,7 @@ namespace TrisGPOI.Database.Game
             _context.Game.Add(newGame);
             await _context.SaveChangesAsync();
         }
-        public async Task StartJoinCPUGame(string typeGame, string emailPlayer1, string Difficult)
+        public async Task StartJoinCPUGame(string typeGame, string emailPlayer1, string Difficult, string emptyBoard)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             DBGame newGame = new DBGame
@@ -44,7 +35,7 @@ namespace TrisGPOI.Database.Game
                 GameType = typeGame,
                 Player1 = emailPlayer1,
                 Player2 = Difficult,
-                Board = generationEmptyBoard(typeGame),
+                Board = emptyBoard,
                 CurrentPlayer = emailPlayer1,
                 IsFinished = false,
                 LastMoveTime = DateTime.UtcNow,

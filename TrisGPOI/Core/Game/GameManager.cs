@@ -128,6 +128,7 @@ namespace TrisGPOI.Core.Game
             string[] possibleType =
             {
                 "Normal",
+                "Infinity",
             };
             bool possible = false;
             foreach (var type in possibleType)
@@ -151,7 +152,8 @@ namespace TrisGPOI.Core.Game
             bool ris = await _gameRepository.JoinSomeGame(gameType, playerEmail);
             if (!ris)
             {
-                await _gameRepository.StartJoinGame(gameType, playerEmail);
+                ITrisManager _trisManager = _trisManagerFabric.CreateTrisManager(gameType);
+                await _gameRepository.StartJoinGame(gameType, playerEmail, _trisManager.CreateEmptyBoard());
             }
         }
 
@@ -180,7 +182,8 @@ namespace TrisGPOI.Core.Game
                 throw new ExistGameException();
             }
 
-            await _gameRepository.StartJoinCPUGame(type, playerEmail, difficult);
+            ITrisManager _trisManager = _trisManagerFabric.CreateTrisManager(type);
+            await _gameRepository.StartJoinCPUGame(type, playerEmail, difficult, _trisManager.CreateEmptyBoard());
         }
 
         public async Task CancelSearchGame(string email)

@@ -14,40 +14,37 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
         //previene solo la mossa migliore al momento
         public int GetCPUMove(string board)
         {
-            char[] griglia = board.ToCharArray();
             char ai = '2';
             char giocatore = '1';
 
             // Controlla se l'IA può vincere in questa mossa
             for (int i = 0; i < 9; i++)
             {
-                if (griglia[i] == '-')
+                if (_trisManager.IsEmptyPosition(board, i))
                 {
-                    griglia[i] = ai;
-                    if (_trisManager.CheckWin(new string(griglia)) == '2')
+                    var tempBoard = _trisManager.PlayMove(board, i, ai);
+                    if (_trisManager.CheckWin(tempBoard) == '2')
                     {
                         return i;
                     }
-                    griglia[i] = '-';
                 }
             }
 
             // Controlla se l'avversario può vincere nella prossima mossa e bloccalo
             for (int i = 0; i < 9; i++)
             {
-                if (griglia[i] == '-')
+                if (_trisManager.IsEmptyPosition(board, i))
                 {
-                    griglia[i] = giocatore;
-                    if (_trisManager.CheckWin(new string(griglia)) == '1')
+                    var tempBoard = _trisManager.PlayMove(board, i, giocatore);
+                    if (_trisManager.CheckWin(tempBoard) == '1')
                     {
                         return i;
                     }
-                    griglia[i] = '-';
                 }
             }
 
             // Prendi la posizione centrale se disponibile
-            if (griglia[4] == '-')
+            if (_trisManager.IsEmptyPosition(board, 4))
             {
                 return 4;
             }
@@ -56,7 +53,7 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
             int[] angoli = { 0, 2, 6, 8 };
             foreach (int angolo in angoli)
             {
-                if (griglia[angolo] == '-')
+                if (_trisManager.IsEmptyPosition(board, angolo))
                 {
                     return angolo;
                 }
@@ -66,7 +63,7 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
             int[] lati = { 1, 3, 5, 7 };
             foreach (int lato in lati)
             {
-                if (griglia[lato] == '-')
+                if (_trisManager.IsEmptyPosition(board, lato))
                 {
                     return lato;
                 }

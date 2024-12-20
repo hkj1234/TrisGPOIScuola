@@ -14,10 +14,7 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
         public int GetCPUMove(string board)
         {
             Random random = new Random();
-            var mossePossibili = board.Select((c, i) => new { c, i })
-                                                .Where(x => x.c == '-')
-                                                .Select(x => x.i)
-                                                .ToList();
+            var mossePossibili = _trisManager.GetValidPosition(board);
             return mossePossibili[random.Next(mossePossibili.Count)];
         }
     }
