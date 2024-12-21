@@ -83,7 +83,7 @@ namespace TrisGPOI.Database.Game
             game.CurrentPlayer = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
 
             //aggiornamento tempo
-            game.LastMoveTime = DateTime.UtcNow;
+            game.LastMoveTime = DateTime.UtcNow.AddHours(1);
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();

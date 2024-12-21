@@ -50,7 +50,7 @@ namespace TrisGPOI.Core.Game
                 }
             }
 
-            if (!board.Contains('-'))
+            if (IsEmpty(board))
             {
                 return '0';
             }
@@ -76,6 +76,10 @@ namespace TrisGPOI.Core.Game
                         .Where(x => IsEmptyPosition(board, x.i))
                         .Select(x => x.i)
                         .ToList();
+        }
+        public char GetPosition(string board, int position)
+        {
+            return board[position];
         }
     }
 }

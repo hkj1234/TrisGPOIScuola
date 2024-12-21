@@ -162,6 +162,7 @@ namespace TrisGPOI.Core.Game
             string[] possibleType =
             {
                 "Normal",
+                "Infinity",
             };
             bool possible = false;
             foreach (var temp in possibleType)

@@ -9,7 +9,7 @@ namespace TrisGPOI.Core.CPU
         {
             _trisManager = trisManager;
         }
-        public int GetCPUMove(string board, char giocatore, char ai)
+        public int GetCPUMove(string board, char giocatore, char ai, int limit = 10)
         {
             int migliorMossa = -1;
             int migliorValore = int.MinValue;
@@ -17,7 +17,7 @@ namespace TrisGPOI.Core.CPU
             foreach (int i in _trisManager.GetValidPosition(board))
             {
                 var tempBoard = _trisManager.PlayMove(board, i, ai);
-                int valoreMossa = Minimax(tempBoard, false, ai, giocatore, 0);
+                int valoreMossa = Minimax(tempBoard, false, ai, giocatore, 0, limit);
 
                 if (valoreMossa > migliorValore)
                 {

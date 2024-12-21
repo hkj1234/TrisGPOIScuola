@@ -1,15 +1,16 @@
 ﻿using TrisGPOI.Core.CPU.Exceptions;
 using TrisGPOI.Core.CPU.Interfaces;
+using TrisGPOI.Core.CPU.TypeCPUManagerFabric.InfinityCPUManager;
 using TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager;
 using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric
 {
-    public class NormalCPUManagerFabric : ITypeCPUManagerFabric
+    public class InfinityCPUManagerFabric : ITypeCPUManagerFabric
     {
         private readonly ITrisManager _trisManager;
-        public NormalCPUManagerFabric(ITrisManager trisManager)
+        public InfinityCPUManagerFabric(ITrisManager trisManager)
         {
             _trisManager = trisManager;
         }
@@ -17,15 +18,15 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric
         {
             if (difficulty == "Facile")
             {
-                return new NormalFacileCPUManager(_trisManager);
+                return new InfinityFacileCPUManager(_trisManager);
             }
             else if (difficulty == "Medio")
             {
-                return new NormalMedioCPUManager(_trisManager);
+                return new InfinityMedioCPUManager(_trisManager);
             }
             else if (difficulty == "Difficile")
             {
-                return new NormalDifficileCPUManager(_trisManager);
+                return new InfinityDifficileCPUManager(_trisManager);
             }
             return null;
         }

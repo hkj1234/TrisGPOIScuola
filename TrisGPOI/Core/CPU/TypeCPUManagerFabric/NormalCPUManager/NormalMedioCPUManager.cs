@@ -3,10 +3,10 @@ using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
 {
-    public class MedioCPUManager : ICPUManager
+    public class NormalMedioCPUManager : ICPUManager
     {
         private readonly ITrisManager _trisManager;
-        public MedioCPUManager(ITrisManager trisManager)
+        public NormalMedioCPUManager(ITrisManager trisManager)
         {
             _trisManager = trisManager;
         }

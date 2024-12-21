@@ -8,5 +8,6 @@
         string CreateEmptyBoard();
         bool IsEmpty(string board);
         List<int> GetValidPosition(string board);
+        char GetPosition(string board, int position);
     }
 }

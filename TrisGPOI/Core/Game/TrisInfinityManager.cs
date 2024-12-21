@@ -3,24 +3,39 @@ using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Core.Game
 {
-    public class TrisInfinityManager 
-        //: ITrisManager
+    public class TrisInfinityManager : ITrisManager
     {
         public string PlayMove(string board, int position, char simbol)
         {
-            int maxPosition = board.Length;
+            int maxPosition = 9;
             var temp = board.ToCharArray();
-            if (position >= maxPosition || temp[position] != '-' || CheckWin(board) != '-')
+            if (position >= maxPosition || ! IsEmptyPosition(board, position) || CheckWin(board) != '-')
             {
                 throw new InvalidPlayerMoveException();
             }
-            temp[position] = simbol;
+
+            temp[position * 2] = simbol;
+            temp[position * 2 + 1] = '0';
+            
+            for (int i = 0; i < maxPosition; i++)
+            {
+                if (! IsEmptyPosition(new string(temp), i))
+                {
+                    temp[i * 2 + 1]++;
+                    if (temp[i * 2 + 1] > '6')
+                    {
+                        temp[i * 2] = '-';
+                        temp[i * 2 + 1] = '-';
+                    }
+                }
+            }
+
             return new string(temp);
         }
         public char CheckWin(string board)
         {
             // Controlla se la stringa ha una lunghezza valida
-            if (board.Length != 9)
+            if (board.Length != 18)
             {
                 throw new ArgumentException("The grid string must contain exactly 9 characters.");
             }
@@ -41,9 +56,9 @@ namespace TrisGPOI.Core.Game
             // Verifica ogni combinazione vincente
             foreach (var condition in winConditions)
             {
-                char a = board[condition[0]];
-                char b = board[condition[1]];
-                char c = board[condition[2]];
+                char a = GetPosition(board, condition[0]);
+                char b = GetPosition(board, condition[1]);
+                char c = GetPosition(board, condition[2]);
 
                 if (a != '-' && a == b && b == c)
                 {
@@ -51,7 +66,7 @@ namespace TrisGPOI.Core.Game
                 }
             }
 
-            if (!board.Contains('-'))
+            if (IsEmpty(board))
             {
                 return '0';
             }
@@ -61,11 +76,25 @@ namespace TrisGPOI.Core.Game
         }
         public bool IsEmptyPosition(string board, int position)
         {
-            return board[position] == '-';
+            return GetPosition(board, position) == '-';
         }
         public string CreateEmptyBoard()
         {
             return new string('-', 18);
+        }
+        public bool IsEmpty(string board)
+        {
+            return false;
+        }
+        public List<int> GetValidPosition(string board)
+        {
+            return Enumerable.Range(0, 9)
+                    .Where(i => IsEmptyPosition(board, i))
+                    .ToList();
+        }
+        public char GetPosition(string board, int position)
+        {
+            return board[position*2];
         }
     }
 }

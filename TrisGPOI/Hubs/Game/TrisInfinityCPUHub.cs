@@ -6,8 +6,8 @@ using TrisGPOI.Core.Game.Interfaces;
 namespace TrisGPOI.Hubs.Game
 {
     [Authorize]
-    public class TrisNormaleCPUHub : TrisCPUHubModel
+    public class TrisInfinityCPUHub : TrisCPUHubModel
     {
-        public TrisNormaleCPUHub(IGameManager gameManager) : base(gameManager, "Normal") { }
+        public TrisInfinityCPUHub(IGameManager gameManager) : base(gameManager, "Infinity") { }
     }
 }

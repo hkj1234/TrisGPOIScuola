@@ -3,9 +3,9 @@ using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.NormalCPUManager
 {
-    public class DifficileCPUManager : MinMaxCPUMove, ICPUManager
+    public class NormalDifficileCPUManager : MinMaxCPUMove, ICPUManager
     {
-        public DifficileCPUManager(ITrisManager trisManager) : base(trisManager) { }
+        public NormalDifficileCPUManager(ITrisManager trisManager) : base(trisManager) { }
 
         public int GetCPUMove(string board)
         {

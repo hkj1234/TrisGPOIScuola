@@ -17,6 +17,10 @@ namespace TrisGPOI.Core.CPU
             {
                 return new NormalCPUManagerFabric(_trisManagerFabric.CreateTrisManager(type));
             }
+            if (type == "Infinity")
+            {
+                return new InfinityCPUManagerFabric(_trisManagerFabric.CreateTrisManager(type));
+            }
             return null;
         }
     }
