@@ -4,7 +4,7 @@ namespace TrisGPOI.Core.CPU
 {
     public class MinMaxCPUMove
     {
-        private readonly ITrisManager _trisManager;
+        internal readonly ITrisManager _trisManager;
         public MinMaxCPUMove(ITrisManager trisManager)
         {
             _trisManager = trisManager;
@@ -13,8 +13,9 @@ namespace TrisGPOI.Core.CPU
         {
             int migliorMossa = -1;
             int migliorValore = int.MinValue;
+            var ValidPositions = _trisManager.GetValidPosition(board);
 
-            foreach (int i in _trisManager.GetValidPosition(board))
+            foreach (int i in ValidPositions)
             {
                 var tempBoard = _trisManager.PlayMove(board, i, ai);
                 int valoreMossa = Minimax(tempBoard, false, ai, giocatore, 0, limit);
@@ -42,26 +43,20 @@ namespace TrisGPOI.Core.CPU
             if (isMax)
             {
                 int migliorValore = int.MinValue;
-                for (int i = 0; i < 9; i++)
+                foreach (int i in _trisManager.GetValidPosition(griglia))
                 {
-                    if (_trisManager.IsEmptyPosition(griglia, i))
-                    {
-                        var tempBoard = _trisManager.PlayMove(griglia, i, ai);
-                        migliorValore = Math.Max(migliorValore, Minimax(tempBoard, false, ai, giocatore, depth + 1));
-                    }
+                    var tempBoard = _trisManager.PlayMove(griglia, i, ai);
+                    migliorValore = Math.Max(migliorValore, Minimax(tempBoard, false, ai, giocatore, depth + 1, limit));
                 }
                 return migliorValore;
             }
             else
             {
                 int migliorValore = int.MaxValue;
-                for (int i = 0; i < 9; i++)
+                foreach (int i in _trisManager.GetValidPosition(griglia))
                 {
-                    if (griglia[i] == '-')
-                    {
-                        var tempBoard = _trisManager.PlayMove(griglia, i, giocatore);
-                        migliorValore = Math.Min(migliorValore, Minimax(tempBoard, true, ai, giocatore, depth + 1));
-                    }
+                    var tempBoard = _trisManager.PlayMove(griglia, i, giocatore);
+                    migliorValore = Math.Min(migliorValore, Minimax(tempBoard, true, ai, giocatore, depth + 1, limit));
                 }
                 return migliorValore;
             }

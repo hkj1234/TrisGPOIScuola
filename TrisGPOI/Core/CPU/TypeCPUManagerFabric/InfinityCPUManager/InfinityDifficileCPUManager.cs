@@ -9,7 +9,25 @@ namespace TrisGPOI.Core.CPU.TypeCPUManagerFabric.InfinityCPUManager
 
         public int GetCPUMove(string board)
         {
-            return base.GetCPUMove(board, '1', '2', 9);
+            var ValidPositions = _trisManager.GetValidPosition(board);
+            if (ValidPositions.Count() >= 7)
+            {
+                if (_trisManager.IsEmptyPosition(board, 4))
+                {
+                    return 4;
+                }
+
+                // Prendi una posizione angolare se disponibile
+                int[] angoli = { 0, 2, 6, 8 };
+                foreach (int angolo in angoli)
+                {
+                    if (_trisManager.IsEmptyPosition(board, angolo))
+                    {
+                        return angolo;
+                    }
+                }
+            }
+            return base.GetCPUMove(board, '1', '2', 10);
         }
     }
 }
