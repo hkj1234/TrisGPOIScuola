@@ -97,8 +97,24 @@ namespace TrisGPOI.Hubs
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }       
         }
+        public async Task Abandon()
+        {
+            try
+            {
+                var email = Context.User?.Identity?.Name;
+                var game = await _gameManager.SearchPlayerPlayingGameAsync(email);
+                await _gameManager.GameAbandon(email);
+                string groupName = game.Id.ToString();
+                // Invia la mossa a tutti i client
+                await Clients.Group(groupName).SendAsync("Winning", game.Player1 == email ? game.Player2 : game.Player1);
+            }
+            catch (Exception ex)
+            {
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+            }
+        }
 
-        private async Task CheckComunicationWinning(char value, string email, string groupName)
+        internal async Task CheckComunicationWinning(char value, string email, string groupName)
         {
             if (value == '0')
             {

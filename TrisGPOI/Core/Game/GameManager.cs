@@ -63,7 +63,15 @@ namespace TrisGPOI.Core.Game
                 GameType = game.GameType,
             };
         }
-
+        public async Task GameAbandon(string playerEmail)
+        {
+            DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
+            if (game == null)
+            {
+                throw new NoGamePlayingException();
+            }
+            await _gameRepository.GameFinished(game.Id);
+        }
         public async Task<BoardInfo> CPUPlayMove(string playerEmail)
         {
             DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
