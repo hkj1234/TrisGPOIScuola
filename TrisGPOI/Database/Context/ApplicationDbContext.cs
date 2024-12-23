@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<DBUser> Users { get; set; }
+    public DbSet<DBUserVittoriePVP> UserVittoriePVP { get; set; }
     public DbSet<DBOtpEntity> OTP { get; set; }
     public DbSet<DBGame> Game { get; set; }
 }

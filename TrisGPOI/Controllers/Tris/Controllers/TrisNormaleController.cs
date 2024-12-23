@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using TrisGPOI.Controllers.TrisNormale.Entities;
+using TrisGPOI.Controllers.Tris.Entities;
 using TrisGPOI.Core.Game.Exceptions;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Hubs.Game;
 
-
-namespace TrisGPOI.Controllers.TrisNormale.Controllers
+/*
+namespace TrisGPOI.Controllers.Tris.Controllers
 {
     [ApiController]
     [Route("Normal")]
@@ -101,3 +101,4 @@ namespace TrisGPOI.Controllers.TrisNormale.Controllers
         }
     }
 }
+*/

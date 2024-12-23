@@ -8,12 +8,12 @@ using TrisGPOI.Database.Game.Entities;
 
 namespace TrisGPOI.Core.Game
 {
-    public class GameManager : IGameManager
+    public class GameplayManager : IGameManager
     {
         private readonly IGameRepository _gameRepository;
         private readonly ITrisManagerFabric _trisManagerFabric;
         private readonly ICPUManagerFabric _cPUManagerFabric;
-        public GameManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric)
+        public GameplayManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric, IGameVictoryManager gameVictoryManager)
         {
             _gameRepository = gameRepository;
             _trisManagerFabric = trisManagerFabric;
@@ -129,6 +129,7 @@ namespace TrisGPOI.Core.Game
             {
                 "Normal",
                 "Infinity",
+                "Ultimate",
             };
             bool possible = false;
             foreach (var type in possibleType)
@@ -163,6 +164,7 @@ namespace TrisGPOI.Core.Game
             {
                 "Normal",
                 "Infinity",
+                "Ultimate",
             };
             bool possible = false;
             foreach (var temp in possibleType)

@@ -151,8 +151,8 @@ namespace TrisGPOI.Controllers.User.Controllers
 
         //GetData
         [Authorize]
-        [HttpGet("GetData")]
-        public async Task<IActionResult> GetData()
+        [HttpGet("GetMyData")]
+        public async Task<IActionResult> GetMyData()
         {
             try
             {

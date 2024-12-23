@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace TrisGPOI.Hubs
     {
         private readonly IGameManager _gameManager;
         private readonly string _type;
-        public TrisHubModel(IGameManager gameManager, string type)
+        private readonly IGameVictoryManager _gameVictoryManager;
+        public TrisHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager)
         {
             _gameManager = gameManager;
             _type = type;
+            _gameVictoryManager = gameVictoryManager;
         }
         public override async Task OnConnectedAsync()
         {
@@ -90,7 +93,7 @@ namespace TrisGPOI.Hubs
 
                 await Task.Delay(10);
 
-                await CheckComunicationWinning(board.Victory, email, groupName);
+                await CheckComunicationWinning(board, email, groupName);
             }
             catch (Exception ex)
             {
@@ -98,15 +101,18 @@ namespace TrisGPOI.Hubs
             }       
         }
 
-        private async Task CheckComunicationWinning(char value, string email, string groupName)
+        private async Task CheckComunicationWinning(BoardInfo info, string email, string groupName)
         {
+            char value = info.Victory;
             if (value == '0')
             {
                 await Clients.Group(groupName).SendAsync("Winning", '0');
+                await _gameVictoryManager.GameFinished(info.Player1, info.Player2, "0", _type);
             }
             else if (value != '-')
             {
                 await Clients.Group(groupName).SendAsync("Winning", email);
+                await _gameVictoryManager.GameFinished(info.Player1, info.Player2, email, _type);
             }
         }
     }

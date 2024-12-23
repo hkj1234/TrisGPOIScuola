@@ -1,4 +1,4 @@
-﻿namespace TrisGPOI.Controllers.TrisNormale.Entities
+﻿namespace TrisGPOI.Controllers.Tris.Entities
 {
     public class PlayMoveModel
     {

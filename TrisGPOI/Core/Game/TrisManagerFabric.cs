@@ -1,4 +1,5 @@
 ﻿using TrisGPOI.Core.Game.Interfaces;
+using TrisGPOI.Core.Game.TypeTrisManager;
 
 namespace TrisGPOI.Core.Game
 {

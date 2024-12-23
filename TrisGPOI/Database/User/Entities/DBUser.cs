@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
 
 namespace TrisGPOI.Database.User.Entities
@@ -12,5 +13,8 @@ namespace TrisGPOI.Database.User.Entities
         [Required]
         public string Password { get; set; } = "";
         public bool IsActive { get; set; }
+        public string Status { get; set; } = "";
+        public string FotoProfilo { get; set; } = "";
+        public string Description { get; set; } = "";
     }
 }

@@ -4,13 +4,13 @@ using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Database.Game;
 
-namespace TrisGPOI.Controllers.TrisNormale
+namespace TrisGPOI.Controllers.Tris
 {
-    public static class TrisNormaleSetup
+    public static class TrisSetup
     {
         public static IServiceCollection AddTrisNormale(this IServiceCollection services)
         {
-            services.AddScoped<IGameManager, GameManager>();
+            services.AddScoped<IGameManager, GameplayManager>();
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<ICPUManagerFabric, CPUManagerFabric>();
             services.AddScoped<ITrisManagerFabric, TrisManagerFabric>();
