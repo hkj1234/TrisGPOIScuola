@@ -15,7 +15,7 @@ namespace TrisGPOI.Hubs.Game
     [Authorize]
     public class TrisNormaleHub : TrisHubModel
     {
-        public TrisNormaleHub(IGameManager gameManager) : base(gameManager, "Normal") { }
+        public TrisNormaleHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager) : base(gameManager, "Normal", gameVictoryManager) { }
     }
 }
 

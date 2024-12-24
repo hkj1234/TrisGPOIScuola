@@ -14,6 +14,7 @@ namespace TrisGPOI.Controllers.Tris
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<ICPUManagerFabric, CPUManagerFabric>();
             services.AddScoped<ITrisManagerFabric, TrisManagerFabric>();
+            services.AddScoped<IGameVictoryManager, GameVictoryManager>();
             return services;
         }
     }

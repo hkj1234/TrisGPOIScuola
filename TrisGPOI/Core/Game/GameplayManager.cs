@@ -13,7 +13,7 @@ namespace TrisGPOI.Core.Game
         private readonly IGameRepository _gameRepository;
         private readonly ITrisManagerFabric _trisManagerFabric;
         private readonly ICPUManagerFabric _cPUManagerFabric;
-        public GameplayManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric, IGameVictoryManager gameVictoryManager)
+        public GameplayManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric)
         {
             _gameRepository = gameRepository;
             _trisManagerFabric = trisManagerFabric;

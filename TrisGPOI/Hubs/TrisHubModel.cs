@@ -19,10 +19,11 @@ namespace TrisGPOI.Hubs
         internal readonly IGameManager _gameManager;
         internal readonly string _type;
         internal static Dictionary<string, Timer> userTimers = new Dictionary<string, Timer>();
-        public TrisHubModel(IGameManager gameManager, string type)
-        private readonly IGameManager _gameManager;
-        private readonly string _type;
         private readonly IGameVictoryManager _gameVictoryManager;
+        public async Task SimpleConectionAsync()
+        {
+            await base.OnConnectedAsync();
+        }
         public TrisHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager)
         {
             _gameManager = gameManager;
@@ -99,7 +100,6 @@ namespace TrisGPOI.Hubs
                 await Task.Delay(10);
 
                 await CheckComunicationWinning(board, email, groupName);
-                await CheckComunicationWinning(board.Victory, email, groupName);
 
                 if (board.Victory == '-')
                 {
@@ -120,7 +120,9 @@ namespace TrisGPOI.Hubs
                 await _gameManager.GameAbandon(email);
                 string groupName = game.Id.ToString();
                 // Invia la mossa a tutti i client
-                await Clients.Group(groupName).SendAsync("Winning", game.Player1 == email ? game.Player2 : game.Player1);
+                string winner = game.Player1 == email ? game.Player2 : game.Player1;
+                await Clients.Group(groupName).SendAsync("Winning", winner);
+                await _gameVictoryManager.GameFinished(game.Player1, game.Player2, winner, _type);
             }
             catch (Exception ex)
             {
@@ -128,8 +130,7 @@ namespace TrisGPOI.Hubs
             }
         }
 
-        private async Task CheckComunicationWinning(BoardInfo info, string email, string groupName)
-        internal async Task CheckComunicationWinning(char value, string email, string groupName)
+        internal async Task CheckComunicationWinning(BoardInfo info, string email, string groupName)
         {
             char value = info.Victory;
             bool finished = false;
@@ -143,7 +144,6 @@ namespace TrisGPOI.Hubs
             {
                 await Clients.Group(groupName).SendAsync("Winning", email);
                 await _gameVictoryManager.GameFinished(info.Player1, info.Player2, email, _type);
-            }
                 finished = true;
             }
             if (finished)
@@ -186,6 +186,7 @@ namespace TrisGPOI.Hubs
             string winner = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
 
             await info.Clients.Group(groupName).SendAsync("Winning", winner);
+            await _gameVictoryManager.GameFinished(game.Player1, game.Player2, winner, _type);
 
             await _gameManager.GameAbandon(int.Parse(groupName));
         }

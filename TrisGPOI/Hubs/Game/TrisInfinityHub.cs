@@ -6,7 +6,7 @@ namespace TrisGPOI.Hubs.Game
     [Authorize]
     public class TrisInfinityHub : TrisHubModel
     {
-        public TrisInfinityHub(IGameManager gameManager) : base(gameManager, "Infinity") { }
+        public TrisInfinityHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager) : base(gameManager, "Infinity", gameVictoryManager) { }
     }
 }
 

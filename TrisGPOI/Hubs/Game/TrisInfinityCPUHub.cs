@@ -8,6 +8,6 @@ namespace TrisGPOI.Hubs.Game
     [Authorize]
     public class TrisInfinityCPUHub : TrisCPUHubModel
     {
-        public TrisInfinityCPUHub(IGameManager gameManager) : base(gameManager, "Infinity") { }
+        public TrisInfinityCPUHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager) : base(gameManager, "Infinity", gameVictoryManager) { }
     }
 }

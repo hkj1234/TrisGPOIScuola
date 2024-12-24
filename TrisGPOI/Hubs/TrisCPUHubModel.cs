@@ -8,7 +8,8 @@ namespace TrisGPOI.Hubs
 {
     public class TrisCPUHubModel : TrisHubModel
     {
-        public TrisCPUHubModel(IGameManager gameManager, string type) : base(gameManager, type) { }
+        public TrisCPUHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager) : base(gameManager, type, gameVictoryManager) { }
+        
         public override async Task OnConnectedAsync()
         {
             var email = Context.User?.Identity?.Name;
@@ -22,14 +23,14 @@ namespace TrisGPOI.Hubs
                     string groupName = game.Id.ToString();
                     // Aggiungi la nuova connessione
                     await Groups.AddToGroupAsync(connectionId, groupName);
-                    await base.OnConnectedAsync();
+                    await base.SimpleConectionAsync();
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
                     updateTimer(groupName, game.LastMoveTime);
                 }
                 else
                 {
-                    await base.OnConnectedAsync();
+                    await base.SimpleConectionAsync();
                 }
             }
             catch (Exception ex)
@@ -105,7 +106,7 @@ namespace TrisGPOI.Hubs
                 await Task.Delay(10);
 
                 //se il giocatore vince manda un messaggio
-                await CheckComunicationWinning(board.Victory, email, groupName);
+                await CheckComunicationWinning(board, email, groupName);
 
                 if (board.Victory == '-' && (!game.Player2.Contains(value: "@")))
                 {
@@ -121,7 +122,7 @@ namespace TrisGPOI.Hubs
                     await Task.Delay(10);
 
                     //se il AI vince manda un messaggio
-                    await CheckComunicationWinning(board.Victory, game.Player2, groupName);
+                    await CheckComunicationWinning(board, game.Player2, groupName);
                 }
             }
             catch (Exception ex)

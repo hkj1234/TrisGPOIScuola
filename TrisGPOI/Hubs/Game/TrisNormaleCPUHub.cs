@@ -8,6 +8,6 @@ namespace TrisGPOI.Hubs.Game
     [Authorize]
     public class TrisNormaleCPUHub : TrisCPUHubModel
     {
-        public TrisNormaleCPUHub(IGameManager gameManager) : base(gameManager, "Normal") { }
+        public TrisNormaleCPUHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager) : base(gameManager, "Normal", gameVictoryManager) { }
     }
 }

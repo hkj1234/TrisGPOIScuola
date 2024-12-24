@@ -22,7 +22,7 @@ namespace TrisGPOI.Controllers.User
             services.AddScoped<IOTPRepository, OTPRepository>();
             services.AddScoped<IOTPManager, OTPManager>();
             services.AddScoped<IMailManager, MailManager>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserVittorieRepository, UserVittorieRepository>();
             return services;
         }
     }

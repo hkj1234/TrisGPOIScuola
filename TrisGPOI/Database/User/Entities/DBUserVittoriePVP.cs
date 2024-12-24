@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrisGPOI.Database.User.Entities
 {
     public class DBUserVittoriePVP
     {
-        [ForeignKey(nameof(DBUser))]
+        [Key]
         public string Email { get; set; }
 
 
