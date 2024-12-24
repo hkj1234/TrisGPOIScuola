@@ -38,7 +38,7 @@ namespace TrisGPOI.Database.Game
                 Board = emptyBoard,
                 CurrentPlayer = emailPlayer1,
                 IsFinished = false,
-                LastMoveTime = DateTime.UtcNow,
+                LastMoveTime = DateTime.UtcNow.AddHours(1),
             };
             _context.Game.Add(newGame);
             await _context.SaveChangesAsync();
@@ -52,7 +52,7 @@ namespace TrisGPOI.Database.Game
                 return false;
             }
             game.Player2 = emailPlayer2;
-            game.LastMoveTime = DateTime.UtcNow;
+            game.LastMoveTime = DateTime.UtcNow.AddMinutes(2);
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();
@@ -61,20 +61,20 @@ namespace TrisGPOI.Database.Game
         public async Task<DBGame?> SearchPlayerPlayingOrWaitingGame(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime.AddMinutes(1) >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email));
+            return await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email));
         }
         public async Task<DBGame?> SearchPlayerPlayingGame(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime.AddMinutes(1) >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email) && x.Player2 != null);
+            return await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email) && x.Player2 != null);
         }
-        public async Task UpdateBoard(string email, string board)
+        public async Task<DBGame?> UpdateBoard(string email, string board)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            var game = await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime.AddMinutes(1) >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email) && x.Player2 != null);
+            var game = await _context.Game.FirstOrDefaultAsync(x => (x.IsFinished == false && x.LastMoveTime >= DateTime.UtcNow) && (x.Player1 == email || x.Player2 == email) && x.Player2 != null);
             if (game == null)
             {
-                return;
+                return null;
             }
             //aggiornamento board
             game.Board = board;
@@ -83,10 +83,12 @@ namespace TrisGPOI.Database.Game
             game.CurrentPlayer = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
 
             //aggiornamento tempo
-            game.LastMoveTime = DateTime.UtcNow.AddHours(1);
+            game.LastMoveTime = DateTime.UtcNow.AddMinutes(1);
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();
+
+            return game;
         }
 
         public async Task<string> GameFinished(int id)
@@ -114,6 +116,12 @@ namespace TrisGPOI.Database.Game
             }
             _context.Game.Remove(game);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<DBGame?> FindGameWithId(int id)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            return await _context.Game.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

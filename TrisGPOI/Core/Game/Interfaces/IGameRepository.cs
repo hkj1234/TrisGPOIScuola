@@ -7,10 +7,11 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task<DBGame?> SearchPlayerPlayingOrWaitingGame(string email);
         Task<bool> JoinSomeGame(string typeGame, string emailPlayer2);
         Task StartJoinGame(string typeGame, string emailPlayer1, string emptyBoard);
-        Task UpdateBoard(string email, string board);
+        Task<DBGame?> UpdateBoard(string email, string board);
         Task<string> GameFinished(int id);
         Task CancelSearchGame(string email);
         Task<DBGame?> SearchPlayerPlayingGame(string email);
         Task StartJoinCPUGame(string typeGame, string emailPlayer1, string Difficult, string emptyBoard);
+        Task<DBGame?> FindGameWithId(int id);
     }
 }

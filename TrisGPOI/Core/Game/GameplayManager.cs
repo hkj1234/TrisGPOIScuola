@@ -43,7 +43,7 @@ namespace TrisGPOI.Core.Game
             }
             char simbol = game.CurrentPlayer == game.Player1 ? '1' : '2';
             string board = _trisManager.PlayMove(game.Board, position, simbol);
-            await _gameRepository.UpdateBoard(playerEmail, board);
+            var info = await _gameRepository.UpdateBoard(playerEmail, board);
 
             //vediamo se qualcuno ha vinto
             char ris = _trisManager.CheckWin(board);
@@ -59,11 +59,29 @@ namespace TrisGPOI.Core.Game
                 Player1 = game.Player1,
                 Player2 = game.Player2,
                 CurrentPlayer = currentPlayer == game.Player1 ? game.Player2 : game.Player1,
-                LastMoveTime = DateTime.UtcNow,
+                LastMoveTime = info.LastMoveTime,
                 GameType = game.GameType,
             };
         }
-
+        public async Task GameAbandon(string playerEmail)
+        {
+            DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
+            if (game == null)
+            {
+                throw new NoGamePlayingException();
+            }
+            await _gameRepository.GameFinished(game.Id);
+        }
+        public async Task GameAbandon(int Id)
+        {
+            var game = await SearchGameWithId(Id);
+            if (game == null)
+            {
+                throw new NoGamePlayingException();
+            }
+            await _gameRepository.GameFinished(game.Id);
+        }
+        
         public async Task<BoardInfo> CPUPlayMove(string playerEmail)
         {
             DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
@@ -89,7 +107,7 @@ namespace TrisGPOI.Core.Game
             int position = CPUManager.GetCPUMove(game.Board);
             char simbol = '2';
             var board = _trisManager.PlayMove(game.Board, position, simbol);
-            await _gameRepository.UpdateBoard(playerEmail, board);
+            var info = await _gameRepository.UpdateBoard(playerEmail, board);
 
             //vediamo se qualcuno ha vinto
             char ris = _trisManager.CheckWin(board);
@@ -106,7 +124,7 @@ namespace TrisGPOI.Core.Game
                 Player1 = game.Player1,
                 Player2 = game.Player2,
                 CurrentPlayer = game.CurrentPlayer == game.Player1 ? game.Player2 : game.Player1,
-                LastMoveTime = DateTime.UtcNow,
+                LastMoveTime = info.LastMoveTime,
                 GameType = game.GameType,
             };
         }
@@ -192,6 +210,19 @@ namespace TrisGPOI.Core.Game
         public async Task CancelSearchGame(string email)
         {
             await _gameRepository.CancelSearchGame(email);
+        }
+        public async Task<DBGame?> SearchGameWithId(int id)
+        {
+            var game = await _gameRepository.FindGameWithId(id);
+            if (game == null)
+            {
+                throw new NoGamePlayingException();
+            }
+            return game;
+        }
+        public async Task<DBGame?> SearchGameWithId(string id)
+        {
+            return await SearchGameWithId(int.Parse(id));
         }
     }
 }

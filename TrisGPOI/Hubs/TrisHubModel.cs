@@ -16,6 +16,10 @@ namespace TrisGPOI.Hubs
     [Authorize]
     public class TrisHubModel : Hub
     {
+        internal readonly IGameManager _gameManager;
+        internal readonly string _type;
+        internal static Dictionary<string, Timer> userTimers = new Dictionary<string, Timer>();
+        public TrisHubModel(IGameManager gameManager, string type)
         private readonly IGameManager _gameManager;
         private readonly string _type;
         private readonly IGameVictoryManager _gameVictoryManager;
@@ -49,6 +53,7 @@ namespace TrisGPOI.Hubs
                     await base.OnConnectedAsync();
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
+                    updateTimer(groupName, game.LastMoveTime);
                 }
                 else
                 {
@@ -80,7 +85,7 @@ namespace TrisGPOI.Hubs
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }
         }
-        public async Task SendMove(int position)
+        public virtual async Task SendMove(int position)
         {
             try
             {
@@ -94,26 +99,95 @@ namespace TrisGPOI.Hubs
                 await Task.Delay(10);
 
                 await CheckComunicationWinning(board, email, groupName);
+                await CheckComunicationWinning(board.Victory, email, groupName);
+
+                if (board.Victory == '-')
+                {
+                    updateTimer(groupName, board.LastMoveTime);
+                }
             }
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }       
         }
+        public async Task Abandon()
+        {
+            try
+            {
+                var email = Context.User?.Identity?.Name;
+                var game = await _gameManager.SearchPlayerPlayingGameAsync(email);
+                await _gameManager.GameAbandon(email);
+                string groupName = game.Id.ToString();
+                // Invia la mossa a tutti i client
+                await Clients.Group(groupName).SendAsync("Winning", game.Player1 == email ? game.Player2 : game.Player1);
+            }
+            catch (Exception ex)
+            {
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+            }
+        }
 
         private async Task CheckComunicationWinning(BoardInfo info, string email, string groupName)
+        internal async Task CheckComunicationWinning(char value, string email, string groupName)
         {
             char value = info.Victory;
+            bool finished = false;
             if (value == '0')
             {
                 await Clients.Group(groupName).SendAsync("Winning", '0');
                 await _gameVictoryManager.GameFinished(info.Player1, info.Player2, "0", _type);
+                finished = true;
             }
             else if (value != '-')
             {
                 await Clients.Group(groupName).SendAsync("Winning", email);
                 await _gameVictoryManager.GameFinished(info.Player1, info.Player2, email, _type);
             }
+                finished = true;
+            }
+            if (finished)
+            {
+                if (userTimers.ContainsKey(groupName))
+                {
+                    userTimers[groupName].Change(Timeout.Infinite, Timeout.Infinite);
+                    userTimers[groupName].Dispose();
+                }
+            }
+        }
+
+        internal void updateTimer(string groupName, DateTime time)
+        {
+            if (userTimers.ContainsKey(groupName))
+            {
+                userTimers[groupName].Change(Timeout.Infinite, Timeout.Infinite);
+                userTimers[groupName].Dispose();
+            }
+
+            // Calcola il tempo rimanente fino al momento specificato
+            TimeSpan timeRemaining = time - DateTime.UtcNow;
+
+            // Crea un nuovo timer per l'utente
+            Timer timer = new Timer(TimeOut, new TimerStateForTimeOut
+            {
+                Clients = Clients,
+                groupName = groupName,
+            },
+            timeRemaining, Timeout.InfiniteTimeSpan);
+            userTimers[groupName] = timer;
+        }
+
+        private async void TimeOut(object state)
+        {
+            TimerStateForTimeOut info = (TimerStateForTimeOut)state;
+            string groupName = info.groupName;
+
+            var game = await _gameManager.SearchGameWithId(groupName);
+            string winner = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
+
+            await info.Clients.Group(groupName).SendAsync("Winning", winner);
+
+            await _gameManager.GameAbandon(int.Parse(groupName));
         }
     }
 }

@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Org.BouncyCastle.Asn1.Cms;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TrisGPOI.Core.Game.Interfaces;
 
 namespace TrisGPOI.Hubs
 {
-    public class TrisCPUHubModel : Hub
+    public class TrisCPUHubModel : TrisHubModel
     {
-        private readonly IGameManager _gameManager;
-        private readonly string _type;
-        public TrisCPUHubModel(IGameManager gameManager, string type)
-        {
-            _gameManager = gameManager;
-            _type = type;
-        }
+        public TrisCPUHubModel(IGameManager gameManager, string type) : base(gameManager, type) { }
         public override async Task OnConnectedAsync()
         {
             var email = Context.User?.Identity?.Name;
@@ -29,6 +25,7 @@ namespace TrisGPOI.Hubs
                     await base.OnConnectedAsync();
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
+                    updateTimer(groupName, game.LastMoveTime);
                 }
                 else
                 {
@@ -79,6 +76,7 @@ namespace TrisGPOI.Hubs
                     await Groups.AddToGroupAsync(connectionId, groupName);
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
+                    updateTimer(groupName, game.LastMoveTime);
                 }
             }
             catch (Exception ex)
@@ -87,7 +85,7 @@ namespace TrisGPOI.Hubs
             }
         }
 
-        public async Task SendMove(int position)
+        public override async Task SendMove(int position)
         {
             try
             {
@@ -97,6 +95,12 @@ namespace TrisGPOI.Hubs
                 string groupName = game.Id.ToString();
                 // Invia la mossa a tutti i client
                 await Clients.Group(groupName).SendAsync("ReceiveMove", board);
+
+                //timer
+                if (board.Victory == '-')
+                {
+                    updateTimer(groupName, board.LastMoveTime);
+                }
 
                 await Task.Delay(10);
 
@@ -108,6 +112,12 @@ namespace TrisGPOI.Hubs
                     board = await _gameManager.CPUPlayMove(email);
                     await Clients.Group(groupName).SendAsync("ReceiveMove", board);
 
+                    //timer
+                    if (board.Victory == '-')
+                    {
+                        updateTimer(groupName, board.LastMoveTime);
+                    }
+
                     await Task.Delay(10);
 
                     //se il AI vince manda un messaggio
@@ -117,18 +127,6 @@ namespace TrisGPOI.Hubs
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
-            }
-        }
-
-        private async Task CheckComunicationWinning(char value, string email, string groupName)
-        {
-            if (value == '0')
-            {
-                await Clients.Group(groupName).SendAsync("Winning", '0');
-            }
-            else if (value != '-')
-            {
-                await Clients.Group(groupName).SendAsync("Winning", email);
             }
         }
     }
