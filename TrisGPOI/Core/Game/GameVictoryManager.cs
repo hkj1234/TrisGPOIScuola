@@ -13,6 +13,10 @@ namespace TrisGPOI.Core.Game
 
         public async Task GameFinished(string player1, string player2, string victory, string gameType)
         {
+            if (player1 == null || player2 == null || victory == null || gameType == null)
+            {
+                throw new ArgumentNullException();
+            }
             if (victory == player1)
             {
                 await _userVittorieRepository.UserVictory(player1, gameType);

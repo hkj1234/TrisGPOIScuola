@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using TrisGPOI.Core.JWT.Entities;
 using TrisGPOI.Core.JWT.Interfaces;
 
 namespace TrisGPOI.Core.JWT

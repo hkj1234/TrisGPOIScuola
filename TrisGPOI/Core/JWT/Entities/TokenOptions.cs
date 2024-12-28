@@ -1,4 +1,4 @@
-﻿namespace TrisGPOI
+﻿namespace TrisGPOI.Core.JWT.Entities
 {
     public class TokenOptions
     {

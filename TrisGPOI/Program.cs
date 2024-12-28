@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TrisGPOI.Database.Context;
-using TrisGPOI;
 using TrisGPOI.Controllers.User;
 using TrisGPOI.Controllers.Tris;
 using TrisGPOI.Hubs.Game;
 using Microsoft.AspNetCore.SignalR;
+using TrisGPOI.Core.JWT.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 

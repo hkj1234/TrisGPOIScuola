@@ -15,10 +15,10 @@ namespace TrisGPOI.Core.User
         private readonly IUserRepository _userRepository;
         private readonly IMailManager _mailManager;
         private readonly IOTPManager _oTPManager;
-        public UserManager(IJWTManager jWTManager, IUserRepository customersRepository, IMailManager mailManager, IOTPManager oTPManager)
+        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager)
         {
             _jWTManager = jWTManager;
-            _userRepository = customersRepository;
+            _userRepository = userRepository;
             _mailManager = mailManager;
             _oTPManager = oTPManager;
         }

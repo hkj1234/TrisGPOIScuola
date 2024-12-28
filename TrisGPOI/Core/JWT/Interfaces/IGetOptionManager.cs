@@ -1,4 +1,4 @@
-﻿using TrisGPOI;
+﻿using TrisGPOI.Core.JWT.Entities;
 
 namespace TrisGPOI.Core.JWT.Interfaces
 {
