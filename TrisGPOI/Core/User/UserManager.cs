@@ -15,12 +15,14 @@ namespace TrisGPOI.Core.User
         private readonly IUserRepository _userRepository;
         private readonly IMailManager _mailManager;
         private readonly IOTPManager _oTPManager;
-        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager)
+        private readonly IUserVittorieRepository _userVittorieRepository;
+        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager, IUserVittorieRepository userVittorieRepository)
         {
             _jWTManager = jWTManager;
             _userRepository = userRepository;
             _mailManager = mailManager;
             _oTPManager = oTPManager;
+            _userVittorieRepository = userVittorieRepository;   
         }
         public async Task RegisterAsync(UserRegister model)
         {
@@ -123,6 +125,7 @@ namespace TrisGPOI.Core.User
         public async Task<UserData> GetUserData(string email)
         {
             var user = await _userRepository.FirstOrDefaultActiveUser(email);
+            var userStat = await _userVittorieRepository.FindVittorieWithEmail(email);
             if (user == null)
             {
                 throw new NotExisitingEmailException();
@@ -131,6 +134,12 @@ namespace TrisGPOI.Core.User
             {
                 Email = user.Email,
                 Username = user.Username,
+                VictoryNormal = userStat.VictoryNormal,
+                GameNormal = userStat.GameNormal,
+                VictoryInfinity = userStat.VictoryInfinity,
+                GameInfinity = userStat.GameInfinity,
+                VictoryUltimate = userStat.VictoryUltimate,
+                GameUltimate = userStat.GameUltimate,
             };
         }
     }

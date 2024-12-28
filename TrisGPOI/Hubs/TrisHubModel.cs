@@ -20,7 +20,7 @@ namespace TrisGPOI.Hubs
         internal readonly string _type;
         internal static Dictionary<string, Timer> userTimers = new Dictionary<string, Timer>();
         private readonly IGameVictoryManager _gameVictoryManager;
-        public async Task SimpleConectionAsync()
+        internal async Task SimpleConectionAsync()
         {
             await base.OnConnectedAsync();
         }
