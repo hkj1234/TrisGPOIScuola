@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 using Moq;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail;
@@ -18,12 +20,16 @@ namespace TrisGPOIManagerTesting
         private readonly Mock<IUserRepository> _mockUserRepository;
         private readonly Mock<IMailManager> _mockMailManager;
         private readonly Mock<IOTPManager> _mockOTPManager;
+        private readonly Mock<IUserVittorieRepository> _mockUserVittorieRepository;
+        private readonly UserManager _userManager;
         public UserManagerTest()
         {
             _mockJWTManager = new Mock<IJWTManager>(MockBehavior.Strict);
             _mockUserRepository = new Mock<IUserRepository>(MockBehavior.Strict);
             _mockMailManager = new Mock<IMailManager>(MockBehavior.Strict);
             _mockOTPManager = new Mock<IOTPManager>(MockBehavior.Strict);
+            _mockUserVittorieRepository = new Mock<IUserVittorieRepository>(MockBehavior.Strict);
+            _userManager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object, _mockUserVittorieRepository.Object);
         }
 
         [Test]
@@ -37,14 +43,13 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(true);
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.ThrowsAsync<ExisitingEmailException>(Act);
@@ -61,14 +66,13 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(true);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.ThrowsAsync<ExisitingEmailException>(Act);
@@ -85,14 +89,13 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.ThrowsAsync<MalformedDataException>(Act);
@@ -109,14 +112,13 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.ThrowsAsync<MalformedDataException>(Act);
@@ -133,14 +135,13 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "errorError",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.ThrowsAsync<MalformedDataException>(Act);
@@ -157,7 +158,6 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
@@ -168,7 +168,7 @@ namespace TrisGPOIManagerTesting
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.DoesNotThrowAsync(Act);
@@ -185,7 +185,6 @@ namespace TrisGPOIManagerTesting
                 Username = username,
                 Password = "Testing123...",
             };
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
             _mockUserRepository.Setup(x => x.ExistActiveUser(username)).ReturnsAsync(false);
@@ -194,7 +193,7 @@ namespace TrisGPOIManagerTesting
 
             async Task Act()
             {
-                await manager.RegisterAsync(userRegister);
+                await _userManager.RegisterAsync(userRegister);
             }
 
             Assert.DoesNotThrowAsync(Act);
@@ -211,13 +210,12 @@ namespace TrisGPOIManagerTesting
             };
             var UserResult = new DBUser();
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(It.IsAny<string>())).ReturnsAsync(UserResult);
 
             async Task Act()
             {
-                await manager.LoginAsync(userLogin);
+                await _userManager.LoginAsync(userLogin);
             }
 
             Assert.ThrowsAsync<WrongEmailOrPasswordException>(Act);
@@ -237,13 +235,11 @@ namespace TrisGPOIManagerTesting
                 Password = "Testing123..."
             };
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(It.IsAny<string>())).ReturnsAsync(UserResult);
 
             async Task Act()
             {
-                await manager.LoginAsync(userLogin);
+                await _userManager.LoginAsync(userLogin);
             }
 
             Assert.ThrowsAsync<WrongEmailOrPasswordException>(Act);
@@ -265,14 +261,13 @@ namespace TrisGPOIManagerTesting
                 IsActive = false
             };
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
 
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(It.IsAny<string>())).ReturnsAsync(UserResult);
             _mockMailManager.Setup(x => x.SendRegisterOtpEmailAsync(email)).Returns(Task.CompletedTask);
 
             async Task Act()
             {
-                await manager.LoginAsync(userLogin);
+                await _userManager.LoginAsync(userLogin);
             }
 
             Assert.ThrowsAsync<AccountNotActivedException>(Act);
@@ -293,15 +288,13 @@ namespace TrisGPOIManagerTesting
                 IsActive = true
             };
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(It.IsAny<string>())).ReturnsAsync(UserResult);
             _mockMailManager.Setup(x => x.SendRegisterOtpEmailAsync(email)).Returns(Task.CompletedTask);
             _mockJWTManager.Setup(x => x.JWTGenerate(It.IsAny<string>())).Returns("TestingJWT");
 
             async Task Act()
             {
-                await manager.LoginAsync(userLogin);
+                await _userManager.LoginAsync(userLogin);
             }
 
             Assert.DoesNotThrowAsync(Act);
@@ -317,11 +310,9 @@ namespace TrisGPOIManagerTesting
             _mockUserRepository.Setup(x => x.SetActiveUser(email)).Returns(Task.CompletedTask);
             _mockJWTManager.Setup(x => x.JWTGenerate(email)).Returns("ValidJWTToken");
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
             async Task Act()
             {
-                var result = await manager.VerifyOTP(otp, email);
+                var result = await _userManager.VerifyOTP(otp, email);
             }
 
             Assert.DoesNotThrowAsync(Act);
@@ -335,9 +326,7 @@ namespace TrisGPOIManagerTesting
 
             _mockOTPManager.Setup(x => x.CheckOTP(email, otp)).ThrowsAsync(new WrongEmailOrOTPExeption());
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.VerifyOTP(otp, email);
+            async Task Act() => await _userManager.VerifyOTP(otp, email);
 
             Assert.ThrowsAsync<WrongEmailOrOTPExeption>(Act);
         }
@@ -350,9 +339,7 @@ namespace TrisGPOIManagerTesting
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(true);
             _mockMailManager.Setup(x => x.SendLoginOtpEmailAsync(email)).Returns(Task.CompletedTask);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.LoginOTP(email);
+            async Task Act() => await _userManager.LoginOTP(email);
 
             Assert.DoesNotThrowAsync(Act);
         }
@@ -364,9 +351,7 @@ namespace TrisGPOIManagerTesting
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.LoginOTP(email);
+            async Task Act() => await _userManager.LoginOTP(email);
 
             Assert.ThrowsAsync<NotExisitingEmailException>(Act);
         }
@@ -379,9 +364,7 @@ namespace TrisGPOIManagerTesting
 
             _mockUserRepository.Setup(x => x.ChangeUserPassword(email, password)).Returns(Task.CompletedTask);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.ChangeUserPassword(email, password);
+            async Task Act() => await _userManager.ChangeUserPassword(email, password);
 
             Assert.DoesNotThrowAsync(Act);
         }
@@ -392,9 +375,7 @@ namespace TrisGPOIManagerTesting
             var email = "test@gmail.com";
             var password = "short";
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.ChangeUserPassword(email, password);
+            async Task Act() => await _userManager.ChangeUserPassword(email, password);
 
             Assert.ThrowsAsync<MalformedDataException>(Act);
         }
@@ -408,9 +389,7 @@ namespace TrisGPOIManagerTesting
             _mockMailManager.Setup(x => x.SendPasswordDimenticataEmailAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
             _mockUserRepository.Setup(x => x.ChangeUserPassword(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.PasswordDimenticata(email);
+            async Task Act() => await _userManager.PasswordDimenticata(email);
 
             Assert.DoesNotThrowAsync(Act);
         }
@@ -422,9 +401,7 @@ namespace TrisGPOIManagerTesting
 
             _mockUserRepository.Setup(x => x.ExistActiveUser(email)).ReturnsAsync(false);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.PasswordDimenticata(email);
+            async Task Act() => await _userManager.PasswordDimenticata(email);
 
             Assert.ThrowsAsync<NotExisitingEmailException>(Act);
         }
@@ -438,12 +415,15 @@ namespace TrisGPOIManagerTesting
                 Email = email,
                 Username = "testuser"
             };
+            var userVictory = new DBUserVittoriePVP
+            {
 
+            };
+
+            _mockUserVittorieRepository.Setup(x => x.FindVittorieWithEmail(email)).ReturnsAsync(userVictory);
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(email)).ReturnsAsync(user);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            var result = await manager.GetUserData(email);
+            var result = await _userManager.GetUserData(email);
 
             Assert.AreEqual(email, result.Email);
             Assert.AreEqual("testuser", result.Username);
@@ -456,13 +436,96 @@ namespace TrisGPOIManagerTesting
 
             _mockUserRepository.Setup(x => x.FirstOrDefaultActiveUser(email)).ReturnsAsync((DBUser)null);
 
-            var manager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object);
-
-            async Task Act() => await manager.GetUserData(email);
+            async Task Act() => await _userManager.GetUserData(email);
 
             Assert.ThrowsAsync<NotExisitingEmailException>(Act);
         }
 
+        [Test]
+        public async Task ChangeUserDescription_ValidInput_CallsRepositoryMethod()
+        {
+            // Arrange
+            string email = "test@example.com";
+            string description = "New description";
+
+            _mockUserRepository
+                .Setup(repo => repo.ChangeUserDescription(email, description))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _userManager.ChangeUserDescription(email, description);
+
+            // Assert
+            _mockUserRepository.Verify(repo => repo.ChangeUserDescription(email, description), Times.Once);
+        }
+
+        [Test]
+        public async Task ChangeUserFoto_ValidFoto_CallsRepositoryMethod()
+        {
+            // Arrange
+            string email = "test@example.com";
+            string foto = "Collezionabile1";
+
+            _mockUserRepository
+                .Setup(repo => repo.ChangeUserFoto(email, foto))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _userManager.ChangeUserFoto(email, foto);
+
+            // Assert
+            _mockUserRepository.Verify(repo => repo.ChangeUserFoto(email, foto), Times.Once);
+        }
+
+        [Test]
+        public void ChangeUserFoto_InvalidFoto_ThrowsMalformedDataException()
+        {
+            // Arrange
+            string email = "test@example.com";
+            string foto = "invalidImage";
+
+            // Act & Assert
+            Assert.ThrowsAsync<MalformedDataException>(async () =>
+            {
+                await _userManager.ChangeUserFoto(email, foto);
+            });
+
+            _mockUserRepository.Verify(repo => repo.ChangeUserFoto(email, foto), Times.Never);
+        }
+
+        [Test]
+        public async Task ChangeUserStatus_ValidStatus_CallsRepositoryMethod()
+        {
+            // Arrange
+            string email = "test@example.com";
+            string status = "Online"; // Un valore valido
+            _mockUserRepository
+                .Setup(repo => repo.ChangeUserStatus(email, status))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _userManager.ChangeUserStatus(email, status);
+
+            // Assert
+            _mockUserRepository.Verify(repo => repo.ChangeUserStatus(email, status), Times.Once);
+        }
+
+        [Test]
+        public void ChangeUserStatus_InvalidStatus_ThrowsMalformedDataException()
+        {
+            // Arrange
+            string email = "test@example.com";
+            string status = "InvalidStatus"; // Un valore non valido
+
+            // Act & Assert
+            Assert.ThrowsAsync<MalformedDataException>(async () =>
+            {
+                await _userManager.ChangeUserStatus(email, status);
+            });
+
+            // Verifica che il repository non sia stato chiamato
+            _mockUserRepository.Verify(repo => repo.ChangeUserStatus(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
 
     }
 }

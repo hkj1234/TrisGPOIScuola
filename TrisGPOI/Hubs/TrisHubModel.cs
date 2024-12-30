@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Entities;
 using TrisGPOI.Core.Game.Interfaces;
+using TrisGPOI.Core.User.Interfaces;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TrisGPOI.Hubs
@@ -20,15 +21,17 @@ namespace TrisGPOI.Hubs
         internal readonly string _type;
         internal static Dictionary<string, Timer> userTimers = new Dictionary<string, Timer>();
         private readonly IGameVictoryManager _gameVictoryManager;
+        internal readonly IUserManager _userManager;
         internal async Task SimpleConectionAsync()
         {
             await base.OnConnectedAsync();
         }
-        public TrisHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager)
+        public TrisHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager, IUserManager userManager)
         {
             _gameManager = gameManager;
             _type = type;
             _gameVictoryManager = gameVictoryManager;
+            _userManager = userManager;
         }
         public override async Task OnConnectedAsync()
         {
@@ -36,6 +39,7 @@ namespace TrisGPOI.Hubs
             try
             {
                 await _gameManager.JoinGame(email, _type);
+                await _userManager.ChangeUserStatus(email, "Playing");
             }
             catch(Exception e)
             {
@@ -72,12 +76,16 @@ namespace TrisGPOI.Hubs
             try
             {
                 var email = Context.User?.Identity?.Name;
-                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 await _gameManager.CancelSearchGame(email);
+                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 if (game != null)
                 {
                     string groupName = game.Id.ToString();
                     await Clients.Group(groupName).SendAsync("Disconnection", email);
+                }
+                else
+                {
+                    await _userManager.ChangeUserStatus(email, "Offline");
                 }
                 await base.OnDisconnectedAsync(exception);
             }
@@ -153,6 +161,9 @@ namespace TrisGPOI.Hubs
                     userTimers[groupName].Change(Timeout.Infinite, Timeout.Infinite);
                     userTimers[groupName].Dispose();
                 }
+                await _userManager.ChangeUserStatus(info.Player1, "Offline");
+                if (info.Player2.Contains('@'))
+                    await _userManager.ChangeUserStatus(info.Player2, "Offline");
             }
         }
 

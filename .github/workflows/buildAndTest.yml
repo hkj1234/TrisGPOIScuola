@@ -1,0 +1,72 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest  
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Clean previous builds
+        run: dotnet clean
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run unit tests with coverage
+        run: dotnet test --collect:"XPlat Code Coverage" --results-directory TestResult --logger "trx;LogFileName=test_results.trx" --settings coverlet.runsettings 
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate coverage report
+        run: reportgenerator -reports:TestResult/**/*.xml -targetdir:coveragereport -reporttypes:TextSummary
+
+      - name: Publish artifacts
+        if: success()
+        run: |
+          mkdir output
+          
+          Get-ChildItem -Recurse -Filter *.csproj | ForEach-Object {
+            dotnet publish $_.FullName -c Release -o output/$($_.BaseName)
+          }
+          
+          Compress-Archive -Path output/* -DestinationPath output.zip
+
+      - name: Upload ZIP artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: output.zip
+
+      - name: Upload coverage report to Codecov
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: TestResult/*/coverage.cobertura.xml
+          flags: unittests
+          name: coverage-report
+
+      - name: Upload coverage report as artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport/**

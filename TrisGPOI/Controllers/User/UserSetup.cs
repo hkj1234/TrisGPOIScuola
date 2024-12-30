@@ -11,7 +11,7 @@ using TrisGPOI.Database.User;
 
 namespace TrisGPOI.Controllers.User
 {
-    internal static class UserSetup
+    internal static class CollectionSetup
     {
         public static IServiceCollection AddCustomer(this IServiceCollection services)
         {

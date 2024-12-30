@@ -28,12 +28,12 @@ namespace TrisGPOI.Controllers.User.Controllers
 
         //Login
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginAsync([FromBody]UserLoginRequest model)
+        public async Task<IActionResult> LoginAsync([FromBody] UserLoginRequest model)
         {
             try
             {
                 var token = await _userManager.LoginAsync(model.ToUserLogin());
-                return Ok(new { token = token });
+                return Ok(new { token });
             }
             catch (WrongEmailOrPasswordException e)
             {
@@ -77,7 +77,7 @@ namespace TrisGPOI.Controllers.User.Controllers
             try
             {
                 string token = await _userManager.VerifyOTP(model.OTP, model.email);
-                return Ok(new { token = token });
+                return Ok(new { token });
             }
             catch (WrongEmailOrOTPExeption e)
             {
@@ -99,11 +99,11 @@ namespace TrisGPOI.Controllers.User.Controllers
                 await _userManager.PasswordDimenticata(model.Email);
                 return Ok();
             }
-            catch(NotExisitingEmailException e)
+            catch (NotExisitingEmailException e)
             {
                 return BadRequest(e.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return NotFound($"Resource not found {e.Message}");
             }
@@ -137,6 +137,44 @@ namespace TrisGPOI.Controllers.User.Controllers
             {
                 var email = User?.Identity?.Name;
                 await _userManager.ChangeUserPassword(email, model.Password);
+                return Ok();
+            }
+            catch (MalformedDataException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
+
+        //ChangeDescription
+        [Authorize]
+        [HttpPut("ChangeDescription")]
+        public async Task<IActionResult> ChangeDescription([FromBody] ChangeDescriptionRequest model)
+        {
+            try
+            {
+                var email = User?.Identity?.Name;
+                await _userManager.ChangeUserDescription(email, model.Description);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
+
+        //ChangeFotoProfilo
+        [Authorize]
+        [HttpPut("ChangeFotoProfilo")]
+        public async Task<IActionResult> ChangeFotoProfilo([FromBody] ChangeFotoProfiloRequest model)
+        {
+            try
+            {
+                var email = User?.Identity?.Name;
+                await _userManager.ChangeUserFoto(email, model.FotoProfilo);
                 return Ok();
             }
             catch (MalformedDataException e)

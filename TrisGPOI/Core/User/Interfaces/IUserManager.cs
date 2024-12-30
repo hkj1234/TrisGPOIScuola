@@ -12,5 +12,8 @@ namespace TrisGPOI.Core.User.Interfaces
         Task PasswordDimenticata(string email);
         Task LoginOTP(string email);
         Task<UserData> GetUserData(string email);
+        Task ChangeUserDescription(string email, string description);
+        Task ChangeUserFoto(string email, string foto);
+        Task ChangeUserStatus(string email, string status);
     }
 }

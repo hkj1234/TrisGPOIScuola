@@ -47,7 +47,8 @@ namespace TrisGPOI.Database.User
                 Email = model.Email,
                 Username = model.Username,
                 Password = model.Password,
-                IsActive = false
+                IsActive = false,
+
             };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
@@ -73,6 +74,43 @@ namespace TrisGPOI.Database.User
                 return;
             }
             User.Password = password;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task ChangeUserDescription(string email, string description)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.Description = description;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task ChangeUserFoto(string email, string StringaFoto)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.FotoProfilo = StringaFoto;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangeUserStatus(string email, string Status)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.Status = Status;
             _context.Users.Update(User);
             await _context.SaveChangesAsync();
         }

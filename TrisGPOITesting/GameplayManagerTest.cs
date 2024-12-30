@@ -22,9 +22,9 @@ namespace TrisGPOIManagerTesting
         [SetUp]
         public void SetUp()
         {
-            _mockGameRepository = new Mock<IGameRepository>();
-            _mockTrisManagerFabric = new Mock<ITrisManagerFabric>();
-            _mockCPUManagerFabric = new Mock<ICPUManagerFabric>();
+            _mockGameRepository = new Mock<IGameRepository>(MockBehavior.Strict);
+            _mockTrisManagerFabric = new Mock<ITrisManagerFabric>(MockBehavior.Strict);
+            _mockCPUManagerFabric = new Mock<ICPUManagerFabric>(MockBehavior.Strict);
             _gameplayManager = new GameplayManager(_mockGameRepository.Object, _mockTrisManagerFabric.Object, _mockCPUManagerFabric.Object);
         }
 

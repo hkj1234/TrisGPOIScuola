@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using TrisGPOI.Core.Collection;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail.Interfaces;
 using TrisGPOI.Core.OTP.Interfaces;
@@ -125,11 +126,12 @@ namespace TrisGPOI.Core.User
         public async Task<UserData> GetUserData(string email)
         {
             var user = await _userRepository.FirstOrDefaultActiveUser(email);
-            var userStat = await _userVittorieRepository.FindVittorieWithEmail(email);
             if (user == null)
             {
                 throw new NotExisitingEmailException();
             }
+
+            var userStat = await _userVittorieRepository.FindVittorieWithEmail(email);     
             return new UserData
             {
                 Email = user.Email,
@@ -141,6 +143,56 @@ namespace TrisGPOI.Core.User
                 VictoryUltimate = userStat.VictoryUltimate,
                 GameUltimate = userStat.GameUltimate,
             };
+        }
+
+        public async Task ChangeUserDescription(string email, string description)
+        {
+            await _userRepository.ChangeUserDescription(email, description);
+        }
+
+        public async Task ChangeUserFoto(string email, string foto)
+        {
+            string[] possibleList = CollectionListManager.getList();
+            bool passato = false;
+            for (int i = 0; i < possibleList.Length; i++)
+            {
+                if (possibleList[i] == foto)
+                {
+                    passato = true;
+                }
+            }
+
+            if (!passato)
+            {
+                throw new MalformedDataException();
+            }
+
+            await _userRepository.ChangeUserFoto(email, foto);
+        }
+
+        public async Task ChangeUserStatus(string email, string status)
+        {
+            string[] possibleList = new string[]
+            {
+                "Online",
+                "Offline",
+                "Playing"
+            };
+            bool passato = false;
+            for (int i = 0; i < possibleList.Length; i++)
+            {
+                if (possibleList[i] == status)
+                {
+                    passato = true;
+                }
+            }
+
+            if (!passato)
+            {
+                throw new MalformedDataException();
+            }
+
+            await _userRepository.ChangeUserStatus(email, status);
         }
     }
 }

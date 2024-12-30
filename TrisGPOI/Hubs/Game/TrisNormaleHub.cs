@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Entities;
 using TrisGPOI.Core.Game.Interfaces;
+using TrisGPOI.Core.User.Interfaces;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TrisGPOI.Hubs.Game
@@ -15,7 +16,7 @@ namespace TrisGPOI.Hubs.Game
     [Authorize]
     public class TrisNormaleHub : TrisHubModel
     {
-        public TrisNormaleHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager) : base(gameManager, "Normal", gameVictoryManager) { }
+        public TrisNormaleHub(IGameManager gameManager, IGameVictoryManager gameVictoryManager, IUserManager userManager) : base(gameManager, "Normal", gameVictoryManager, userManager) { }
     }
 }
 

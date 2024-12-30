@@ -3,12 +3,13 @@ using Org.BouncyCastle.Asn1.Cms;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TrisGPOI.Core.Game.Interfaces;
+using TrisGPOI.Core.User.Interfaces;
 
 namespace TrisGPOI.Hubs
 {
     public class TrisCPUHubModel : TrisHubModel
     {
-        public TrisCPUHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager) : base(gameManager, type, gameVictoryManager) { }
+        public TrisCPUHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager, IUserManager userManager) : base(gameManager, type, gameVictoryManager, userManager) { }
         
         public override async Task OnConnectedAsync()
         {
@@ -40,26 +41,6 @@ namespace TrisGPOI.Hubs
             }
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-            try
-            {
-                var email = Context.User?.Identity?.Name;
-                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
-                if (game != null)
-                {
-                    string groupName = game.Id.ToString();
-                    await Clients.Group(groupName).SendAsync("Disconnection", email);
-                }
-                await _gameManager.CancelSearchGame(email);
-                await base.OnDisconnectedAsync(exception);
-            }
-            catch (Exception ex)
-            {
-                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
-            }
-        }
-
         public async Task PlayWithCPU(string Difficult)
         {
             try
@@ -78,6 +59,7 @@ namespace TrisGPOI.Hubs
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
                     updateTimer(groupName, game.LastMoveTime);
+                    await _userManager.ChangeUserStatus(email, "Playing");
                 }
             }
             catch (Exception ex)

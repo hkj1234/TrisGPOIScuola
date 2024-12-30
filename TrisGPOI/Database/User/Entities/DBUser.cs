@@ -13,8 +13,8 @@ namespace TrisGPOI.Database.User.Entities
         [Required]
         public string Password { get; set; } = "";
         public bool IsActive { get; set; }
-        public string Status { get; set; } = "";
-        public string FotoProfilo { get; set; } = "";
+        public string Status { get; set; } = "Offline";
+        public string FotoProfilo { get; set; } = "Default";
         public string Description { get; set; } = "";
     }
 }
