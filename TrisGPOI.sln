@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrisGPOI", "TrisGPOI\TrisGPOI.csproj", "{A680071C-0DB9-43C0-8FB7-BB57CB4D4BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrisGPOIManagerTesting", "TrisGPOITesting\TrisGPOIManagerTesting.csproj", "{69E69237-1501-4822-910A-C10C7C785417}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrisGPOIManagerTest", "TrisGPOIManagerTest\TrisGPOIManagerTesting.csproj", "{69E69237-1501-4822-910A-C10C7C785417}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrisGPOIHubTest", "TrisGPOIHubTest\TrisGPOIHubTest.csproj", "{0B18895F-8D88-4500-B449-26CE80B02508}"
 EndProject
