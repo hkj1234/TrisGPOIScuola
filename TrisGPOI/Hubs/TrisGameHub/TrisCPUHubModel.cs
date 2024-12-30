@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.User.Interfaces;
 
-namespace TrisGPOI.Hubs
+namespace TrisGPOI.Hubs.TrisGameHub
 {
     public class TrisCPUHubModel : TrisHubModel
     {
         public TrisCPUHubModel(IGameManager gameManager, string type, IGameVictoryManager gameVictoryManager, IUserManager userManager) : base(gameManager, type, gameVictoryManager, userManager) { }
-        
+
         public override async Task OnConnectedAsync()
         {
             var email = Context.User?.Identity?.Name;
@@ -19,19 +19,19 @@ namespace TrisGPOI.Hubs
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 string connectionId = Context.ConnectionId;
 
-                if (game != null && game.GameType == _type && (game.Player2 != null && !game.Player2.Contains('@')))
+                if (game != null && game.GameType == _type && game.Player2 != null && !game.Player2.Contains('@'))
                 {
                     string groupName = game.Id.ToString();
                     // Aggiungi la nuova connessione
                     await Groups.AddToGroupAsync(connectionId, groupName);
-                    await base.SimpleConectionAsync();
+                    await SimpleConectionAsync();
                     await Clients.Group(groupName).SendAsync("Connection", email);
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
                     updateTimer(groupName, game.LastMoveTime);
                 }
                 else
                 {
-                    await base.SimpleConectionAsync();
+                    await SimpleConectionAsync();
                 }
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace TrisGPOI.Hubs
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 string connectionId = Context.ConnectionId;
 
-                if (game != null && game.GameType == _type && (game.Player2 != null && !game.Player2.Contains('@')))
+                if (game != null && game.GameType == _type && game.Player2 != null && !game.Player2.Contains('@'))
                 {
                     string groupName = game.Id.ToString();
                     // Aggiungi la nuova connessione
@@ -90,7 +90,7 @@ namespace TrisGPOI.Hubs
                 //se il giocatore vince manda un messaggio
                 await CheckComunicationWinning(board, email, groupName);
 
-                if (board.Victory == '-' && (!game.Player2.Contains(value: "@")))
+                if (board.Victory == '-' && !game.Player2.Contains(value: "@"))
                 {
                     board = await _gameManager.CPUPlayMove(email);
                     await Clients.Group(groupName).SendAsync("ReceiveMove", board);

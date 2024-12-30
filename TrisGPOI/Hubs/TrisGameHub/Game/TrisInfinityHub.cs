@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Hubs.TrisGameHub;
 
-namespace TrisGPOI.Hubs.Game
+namespace TrisGPOI.Hubs.TrisGameHub.Game
 {
     [Authorize]
     public class TrisInfinityHub : TrisHubModel

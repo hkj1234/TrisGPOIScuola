@@ -10,9 +10,10 @@ using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Entities;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Hubs.TrisGameHub.Entities;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace TrisGPOI.Hubs
+namespace TrisGPOI.Hubs.TrisGameHub
 {
     [Authorize]
     public class TrisHubModel : Hub
@@ -35,13 +36,39 @@ namespace TrisGPOI.Hubs
         }
         public override async Task OnConnectedAsync()
         {
+            await base.OnConnectedAsync();
+        }
+
+        public virtual async Task Spectator(string email)
+        {
+            var MyEmail = Context.User?.Identity?.Name;
+            try
+            {
+                string connectionId = Context.ConnectionId;
+                var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
+                if (game != null && game.GameType == _type)
+                {
+                    //ricevere la notifica
+                    string groupName = game.Id.ToString();
+                    await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", game);
+                    await Groups.AddToGroupAsync(connectionId, groupName);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+            }
+        }
+
+        public virtual async Task Play()
+        {
             var email = Context.User?.Identity?.Name;
             try
             {
                 await _gameManager.JoinGame(email, _type);
                 await _userManager.ChangeUserStatus(email, "Playing");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
             }
 
@@ -50,7 +77,7 @@ namespace TrisGPOI.Hubs
                 var game = await _gameManager.SearchPlayerPlayingOrWaitingGameAsync(email);
                 string connectionId = Context.ConnectionId;
 
-                if (game != null && game.GameType == _type && ( game.Player2 == null || game.Player2.Contains('@')))
+                if (game != null && game.GameType == _type && (game.Player2 == null || game.Player2.Contains('@')))
                 {
                     string groupName = game.Id.ToString();
                     // Aggiungi la nuova connessione
@@ -60,14 +87,10 @@ namespace TrisGPOI.Hubs
                     await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", arg1: game);
                     updateTimer(groupName, game.LastMoveTime);
                 }
-                else
-                {
-                    Context.Abort();
-                }
             }
             catch (Exception ex)
             {
-                Context.Abort();
+                await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
             }
         }
 
@@ -117,7 +140,7 @@ namespace TrisGPOI.Hubs
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
-            }       
+            }
         }
         public async Task Abandon()
         {

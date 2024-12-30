@@ -194,5 +194,16 @@ namespace TrisGPOI.Core.User
 
             await _userRepository.ChangeUserStatus(email, status);
         }
+
+        public async Task<string> GetUserStatus(string email)
+        {
+            var user = await _userRepository.FirstOrDefaultActiveUser(email);
+            if (user == null)
+            {
+                throw new NotExisitingEmailException();
+            }
+
+            return user.Status;
+        }
     }
 }

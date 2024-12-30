@@ -9,9 +9,10 @@ using TrisGPOI.Core.Game;
 using TrisGPOI.Core.Game.Entities;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Hubs.TrisGameHub;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace TrisGPOI.Hubs.Game
+namespace TrisGPOI.Hubs.TrisGameHub.Game
 {
     [Authorize]
     public class TrisNormaleHub : TrisHubModel

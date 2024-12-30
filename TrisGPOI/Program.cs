@@ -6,9 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using TrisGPOI.Database.Context;
 using TrisGPOI.Controllers.User;
 using TrisGPOI.Controllers.Tris;
-using TrisGPOI.Hubs.Game;
 using Microsoft.AspNetCore.SignalR;
 using TrisGPOI.Core.JWT.Entities;
+using TrisGPOI.Hubs.TrisGameHub.Game;
+using TrisGPOI.Hubs.HomeHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -111,5 +112,7 @@ app.MapHub<TrisNormaleHub>("Normal"); // Mappa l'hub SignalR
 app.MapHub<TrisNormaleCPUHub>("NormalCPU");
 app.MapHub<TrisInfinityHub>("Infinity");
 app.MapHub<TrisInfinityCPUHub>("InfinityCPU");
+
+app.MapHub<HomeHub>("Home");
 
 app.Run();

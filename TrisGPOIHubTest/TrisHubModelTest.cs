@@ -4,7 +4,7 @@ using System;
 using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.User.Interfaces;
 using TrisGPOI.Database.Game.Entities;
-using TrisGPOI.Hubs;
+using TrisGPOI.Hubs.TrisGameHub;
 
 namespace TrisGPOIHubTest
 {
@@ -19,6 +19,9 @@ namespace TrisGPOIHubTest
         Mock<IHubCallerClients> _mockHubCallerClients;
         Mock<ISingleClientProxy> _mockClientProxy;
         Mock<IGroupManager> _mockGroupManager;
+
+        string email = "test@example.com";
+        string connectionId = "connection123";
 
         [SetUp]
         public void SetUp()
@@ -39,7 +42,19 @@ namespace TrisGPOIHubTest
                 Groups = _mockGroupManager.Object
             };
 
+            _mockHubCallerContext.Setup(c => c.User.Identity.Name).Returns(email);
+            _mockHubCallerContext.Setup(c => c.ConnectionId).Returns(connectionId);
+            _mockHubCallerContext.Setup(c => c.Abort()).Verifiable();
 
+            _mockHubCallerClients.Setup(clients => clients.Group(It.IsAny<string>())).Returns(_mockClientProxy.Object);
+            _mockHubCallerClients.Setup(clients => clients.Client(connectionId)).Returns(_mockClientProxy.Object);
+
+            _mockClientProxy
+                .Setup(cp => cp.SendCoreAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<object[]>(),
+                    It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
         }
 
         [TearDown]
@@ -49,11 +64,10 @@ namespace TrisGPOIHubTest
         }
 
         [Test]
-        public async Task OnConnectedAsync_ShouldAddUserToGroupAndNotifyClients()
+        public async Task Play_ShouldAddUserToGroupAndNotifyClients()
         {
             // Arrange
-            var email = "test@example.com";
-            var connectionId = "connection123";
+            
             var game = new DBGame
             {
                 Id = 1,
@@ -63,29 +77,14 @@ namespace TrisGPOIHubTest
                 LastMoveTime = DateTime.UtcNow.AddMinutes(-1)
             };
 
-            _mockHubCallerContext.Setup(c => c.User.Identity.Name).Returns(email);
-            _mockHubCallerContext.Setup(c => c.ConnectionId).Returns(connectionId);
-            _mockHubCallerContext.Setup(c => c.Abort()).Verifiable();
-
             _mockGameManager.Setup(gm => gm.JoinGame(email, "Normal")).Returns(Task.CompletedTask);
             _mockUserManager.Setup(um => um.ChangeUserStatus(email, "Playing")).Returns(Task.CompletedTask);
             _mockGameManager.Setup(gm => gm.SearchPlayerPlayingOrWaitingGameAsync(email)).ReturnsAsync(game);
 
-            _mockHubCallerClients.Setup(clients => clients.Group(It.IsAny<string>())).Returns(_mockClientProxy.Object);
-            _mockHubCallerClients.Setup(clients => clients.Client(connectionId)).Returns(_mockClientProxy.Object);
-
             _mockGroupManager.Setup(g => g.AddToGroupAsync(connectionId, game.Id.ToString(), CancellationToken.None)).Returns(Task.CompletedTask);
 
-            _mockClientProxy
-                .Setup(cp => cp.SendCoreAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<object[]>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-
             // Act
-            await _hub.OnConnectedAsync();
+            await _hub.Play();
 
             // Assert
             _mockGameManager.Verify(gm => gm.JoinGame(email, "Normal"), Times.Once);
@@ -99,19 +98,15 @@ namespace TrisGPOIHubTest
         }
 
         [Test]
-        public async Task OnConnectedAsync_ShouldAbortContextIfNoGameFound()
+        public async Task Play_ShouldAbortContextIfNoGameFound()
         {
             // Arrange
-            var email = "test@example.com";
-
-            _mockHubCallerContext.Setup(c => c.User.Identity.Name).Returns(email);
-            _mockHubCallerContext.Setup(c => c.Abort()).Verifiable();
             _mockGameManager.Setup(gm => gm.JoinGame(email, "Normal")).Returns(Task.CompletedTask);
             _mockUserManager.Setup(um => um.ChangeUserStatus(email, "Playing")).Returns(Task.CompletedTask);
             _mockGameManager.Setup(gm => gm.SearchPlayerPlayingOrWaitingGameAsync(email)).ReturnsAsync((DBGame)null);
 
             // Act
-            await _hub.OnConnectedAsync();
+            await _hub.Play();
 
             // Assert
             _mockGameManager.Verify(gm => gm.JoinGame(email, "Normal"), Times.Once);
