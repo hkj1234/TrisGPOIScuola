@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using TrisGPOI.Controllers.Tris.Entities;
 using TrisGPOI.Core.Game.Exceptions;
 using TrisGPOI.Core.Game.Interfaces;
-using TrisGPOI.Hubs.Game;
-
+using TrisGPOI.Hubs.TrisGameHub;
 
 namespace TrisGPOI.Controllers.Tris.Controllers
 {
