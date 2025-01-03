@@ -36,6 +36,7 @@ namespace TrisGPOI.Hubs.TrisGameHub
         }
         public override async Task OnConnectedAsync()
         {
+            
             await base.OnConnectedAsync();
         }
 

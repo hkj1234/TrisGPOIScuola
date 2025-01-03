@@ -13,6 +13,7 @@ namespace TrisGPOI.Hubs.TrisGameHub
 
         public override async Task OnConnectedAsync()
         {
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMove", "ciao");
             var email = Context.User?.Identity?.Name;
             try
             {
