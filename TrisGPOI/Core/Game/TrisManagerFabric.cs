@@ -15,6 +15,10 @@ namespace TrisGPOI.Core.Game
             {
                 return new TrisInfinityManager();
             }
+            else if (type == "Ultimate")
+            {
+                return new TrisUltimateManager();
+            }
             return null;
         }
     }
