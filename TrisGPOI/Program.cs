@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 using TrisGPOI.Core.JWT.Entities;
 using TrisGPOI.Hubs.TrisGameHub.Game;
 using TrisGPOI.Hubs.HomeHub;
+using TrisGPOI.Controllers.Friend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,7 +88,8 @@ builder.Services.AddSignalR();
 builder.Services
     .AddCustomer()
     .AddTrisNormale()
-    .AddContext();
+    .AddContext()
+    .AddFriend();
 
 
 

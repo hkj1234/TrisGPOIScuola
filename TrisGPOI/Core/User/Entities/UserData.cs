@@ -4,6 +4,9 @@
     {
         public required string Email { get; set; }
         public required string Username { get; set; }
+        public string Status { get; set; } = "Offline";
+        public string FotoProfilo { get; set; } = "Default";
+        public string Description { get; set; } = "";
         public int VictoryNormal { get; set; } = 0;
         public int GameNormal { get; set; } = 0;
         public int VictoryInfinity { get; set; } = 0;

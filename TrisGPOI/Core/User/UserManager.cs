@@ -136,6 +136,9 @@ namespace TrisGPOI.Core.User
             {
                 Email = user.Email,
                 Username = user.Username,
+                Status = user.Status,
+                FotoProfilo = user.FotoProfilo,
+                Description = user.Description,
                 VictoryNormal = userStat.VictoryNormal,
                 GameNormal = userStat.GameNormal,
                 VictoryInfinity = userStat.VictoryInfinity,

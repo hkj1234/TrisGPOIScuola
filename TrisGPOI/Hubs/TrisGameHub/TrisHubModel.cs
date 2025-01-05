@@ -92,6 +92,7 @@ namespace TrisGPOI.Hubs.TrisGameHub
             catch (Exception ex)
             {
                 await Clients.Client(Context.ConnectionId).SendAsync("Errore", ex.Message);
+                await _userManager.ChangeUserStatus(email, "Offline");
             }
         }
 

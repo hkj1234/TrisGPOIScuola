@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrisGPOI.Database.Friend.Entities;
 using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
 using TrisGPOI.Database.User.Entities;
@@ -14,4 +15,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBUserVittoriePVP> UserVittoriePVP { get; set; }
     public DbSet<DBOtpEntity> OTP { get; set; }
     public DbSet<DBGame> Game { get; set; }
+    public DbSet<DBFriend> Friend { get; set; }
+    public DbSet<DBFriendRequest> FriendRequest { get; set; }
 }
