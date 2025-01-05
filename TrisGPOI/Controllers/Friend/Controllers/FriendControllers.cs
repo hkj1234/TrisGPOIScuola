@@ -128,7 +128,7 @@ namespace TrisGPOI.Controllers.Friend.Controllers
 
         //RemoveFriend
         [Authorize]
-        [HttpPost("RemoveFriend")]
+        [HttpDelete("RemoveFriend")]
         public async Task<IActionResult> RemoveFriend([FromBody] FriendEmailRequest friendEmailRequest)
         {
             try
