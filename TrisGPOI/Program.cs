@@ -112,6 +112,7 @@ app.MapHub<TrisNormaleHub>("Normal"); // Mappa l'hub SignalR
 app.MapHub<TrisNormaleCPUHub>("NormalCPU");
 app.MapHub<TrisInfinityHub>("Infinity");
 app.MapHub<TrisInfinityCPUHub>("InfinityCPU");
+app.MapHub<TrisUltimateHub>("Ultimate");
 
 app.MapHub<HomeHub>("Home");
 
