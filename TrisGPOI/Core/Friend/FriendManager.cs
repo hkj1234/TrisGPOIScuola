@@ -1,15 +1,21 @@
 ﻿using TrisGPOI.Core.Friend.Entities;
 using TrisGPOI.Core.Friend.Exceptions;
 using TrisGPOI.Core.Friend.Interfaces;
+using TrisGPOI.Core.User.Exceptions;
+using TrisGPOI.Core.User.Interfaces;
 
 namespace TrisGPOI.Core.Friend
 {
     public class FriendManager : IFriendManager
     {
         private readonly IFriendRepository _friendRepository;
-        public FriendManager(IFriendRepository friendRepository)
+        private readonly IUserRepository _userRepository;
+        private readonly IReceiveBoxManager _receiveBoxManager;
+        public FriendManager(IFriendRepository friendRepository, IUserRepository userRepository, IReceiveBoxManager receiveBoxManager)
         {
             _friendRepository = friendRepository;
+            _userRepository = userRepository;
+            _receiveBoxManager = receiveBoxManager;
         }
         public async Task<List<FriendInList>> GetFriends(string email)
         {
@@ -25,6 +31,10 @@ namespace TrisGPOI.Core.Friend
         }
         public async Task SendFriendRequest(string email, string friendEmail)
         {
+            if (!await _userRepository.ExistUser(friendEmail))
+            {
+                throw new NotExisitingEmailException();
+            }
             if (await _friendRepository.ExistsFriendRequest(email, friendEmail))
             {
                 throw new ExistFriendRequestException();
@@ -40,6 +50,7 @@ namespace TrisGPOI.Core.Friend
             if (await _friendRepository.ExistsFriendRequest(email, friendEmail))
             {
                 await _friendRepository.AcceptFriendRequest(email, friendEmail);
+                await _receiveBoxManager.SendReceiveBox("System", email, "Friend Request Accepted", "Your friend request to " + friendEmail + " has been accepted");
             }
             else
             {
@@ -62,6 +73,7 @@ namespace TrisGPOI.Core.Friend
             if (await _friendRepository.ExistsFriend(email, friendEmail))
             {
                 await _friendRepository.RemoveFriend(email, friendEmail);
+                await _receiveBoxManager.SendReceiveBox("System", friendEmail, "Friend Removed", "Your friend " + email + " has been removed from your friends list");
             }
             else
             {
