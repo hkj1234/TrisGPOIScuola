@@ -52,7 +52,7 @@ namespace TrisGPOI.Database.Game
                 return false;
             }
             game.Player2 = emailPlayer2;
-            game.LastMoveTime = DateTime.UtcNow.AddMinutes(2);
+            game.LastMoveTime = DateTime.UtcNow.AddMinutes(5);
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();
@@ -83,7 +83,7 @@ namespace TrisGPOI.Database.Game
             game.CurrentPlayer = game.Player1 == game.CurrentPlayer ? game.Player2 : game.Player1;
 
             //aggiornamento tempo
-            game.LastMoveTime = DateTime.UtcNow.AddMinutes(1);
+            game.LastMoveTime = DateTime.UtcNow.AddMinutes(3);
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();
