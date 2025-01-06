@@ -10,10 +10,12 @@ namespace TrisGPOI.Core.Friend
     {
         private readonly IFriendRepository _friendRepository;
         private readonly IUserRepository _userRepository;
-        public FriendManager(IFriendRepository friendRepository, IUserRepository userRepository)
+        private readonly IReceiveBoxManager _receiveBoxManager;
+        public FriendManager(IFriendRepository friendRepository, IUserRepository userRepository, IReceiveBoxManager receiveBoxManager)
         {
             _friendRepository = friendRepository;
             _userRepository = userRepository;
+            _receiveBoxManager = receiveBoxManager;
         }
         public async Task<List<FriendInList>> GetFriends(string email)
         {
@@ -48,6 +50,7 @@ namespace TrisGPOI.Core.Friend
             if (await _friendRepository.ExistsFriendRequest(email, friendEmail))
             {
                 await _friendRepository.AcceptFriendRequest(email, friendEmail);
+                await _receiveBoxManager.SendReceiveBox("System", email, "Friend Request Accepted", "Your friend request to " + friendEmail + " has been accepted");
             }
             else
             {
@@ -70,6 +73,7 @@ namespace TrisGPOI.Core.Friend
             if (await _friendRepository.ExistsFriend(email, friendEmail))
             {
                 await _friendRepository.RemoveFriend(email, friendEmail);
+                await _receiveBoxManager.SendReceiveBox("System", friendEmail, "Friend Removed", "Your friend " + email + " has been removed from your friends list");
             }
             else
             {
