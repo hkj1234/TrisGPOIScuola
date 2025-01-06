@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TrisGPOI.Core.Mail.Interfaces;
 using TrisGPOI.Core.OTP.Interfaces;
 using TrisGPOI.Database.Context;
 using TrisGPOI.Database.OTP.Entities;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrisGPOI.Core.ReceiveBox.Entities;
 using TrisGPOI.Database.Friend.Entities;
 using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
@@ -17,4 +18,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBGame> Game { get; set; }
     public DbSet<DBFriend> Friend { get; set; }
     public DbSet<DBFriendRequest> FriendRequest { get; set; }
+    public DbSet<DBReceiveBox> ReceiveBox { get; set; }
+
 }

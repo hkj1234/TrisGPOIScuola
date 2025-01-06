@@ -1,15 +1,19 @@
 ﻿using TrisGPOI.Core.Friend.Entities;
 using TrisGPOI.Core.Friend.Exceptions;
 using TrisGPOI.Core.Friend.Interfaces;
+using TrisGPOI.Core.User.Exceptions;
+using TrisGPOI.Core.User.Interfaces;
 
 namespace TrisGPOI.Core.Friend
 {
     public class FriendManager : IFriendManager
     {
         private readonly IFriendRepository _friendRepository;
-        public FriendManager(IFriendRepository friendRepository)
+        private readonly IUserRepository _userRepository;
+        public FriendManager(IFriendRepository friendRepository, IUserRepository userRepository)
         {
             _friendRepository = friendRepository;
+            _userRepository = userRepository;
         }
         public async Task<List<FriendInList>> GetFriends(string email)
         {
@@ -25,6 +29,10 @@ namespace TrisGPOI.Core.Friend
         }
         public async Task SendFriendRequest(string email, string friendEmail)
         {
+            if (!await _userRepository.ExistUser(friendEmail))
+            {
+                throw new NotExisitingEmailException();
+            }
             if (await _friendRepository.ExistsFriendRequest(email, friendEmail))
             {
                 throw new ExistFriendRequestException();
