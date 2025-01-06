@@ -16,5 +16,10 @@ namespace TrisGPOI.Database.User.Entities
         public string Status { get; set; } = "Offline";
         public string FotoProfilo { get; set; } = "Default";
         public string Description { get; set; } = "";
+
+        public int Level { get; set; } = 1;
+        public int Experience { get; set; } = 0;
+
+        public int MoneyXO { get; set; } = 0;
     }
 }
