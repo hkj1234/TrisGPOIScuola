@@ -11,6 +11,7 @@ using TrisGPOI.Core.JWT.Entities;
 using TrisGPOI.Hubs.TrisGameHub.Game;
 using TrisGPOI.Hubs.HomeHub;
 using TrisGPOI.Controllers.Friend;
+using TrisGPOI.Hubs.TestingHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,6 +110,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<TestingHub>("Testing");
 
 app.MapHub<TrisNormaleHub>("Normal"); // Mappa l'hub SignalR
 app.MapHub<TrisNormaleCPUHub>("NormalCPU");
