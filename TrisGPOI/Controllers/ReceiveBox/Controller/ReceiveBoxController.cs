@@ -85,5 +85,21 @@ namespace TrisGPOI.Controllers.ReceiveBox
                 return NotFound($"Resource not found {e.Message}");
             }
         }   
+
+        //MarkAsUnread
+        [Authorize]
+        [HttpPut("MarkAsUnread")]
+        public async Task<IActionResult> MarkAsUnread([FromBody] ReceiveBoxRequest request)
+        {
+            try
+            {
+                await _receiveBoxManager.MarkAsUnread(request.id, User?.Identity?.Name);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
     }
 }

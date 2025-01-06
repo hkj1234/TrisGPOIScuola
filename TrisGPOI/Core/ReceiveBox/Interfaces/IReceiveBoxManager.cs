@@ -10,6 +10,8 @@ namespace TrisGPOI.Core.ReceiveBox.Interfaces
         Task ReadReceiveBox(int Id);
         Task<bool> ExistReceiveBox(int Id);
         Task<bool> ExistUnreadMailBox(string email);
+        Task MarkAsUnread(int Id, string email);
     }
 }
+
 

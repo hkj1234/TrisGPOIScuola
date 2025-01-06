@@ -56,5 +56,13 @@ namespace TrisGPOI.Core.ReceiveBox
         {
             await _receiveBoxRepository.RemoveExpiredReceiveBox(email);
         }
+        public async Task MarkAsUnread(int Id, string email)
+        {
+            if (!await _receiveBoxRepository.VerifyReceiveBox(Id, email))
+            {
+                throw new NotExistingReceiveBoxException();
+            }
+            await _receiveBoxRepository.MarkAsUnread(Id);
+        }
     }
 }
