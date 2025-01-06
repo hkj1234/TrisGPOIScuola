@@ -6,7 +6,7 @@ using TrisGPOI.Core.Friend.Interfaces;
 namespace TrisGPOI.Controllers.Friend.Controllers
 {
     [ApiController]
-    [Route("")]
+    [Route("Friend")]
     public class FriendController : ControllerBase
     {
         private readonly IFriendManager _friendManager;

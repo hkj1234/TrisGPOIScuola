@@ -57,6 +57,11 @@ namespace TrisGPOI.Database.ReceiveBox
             await using var context = _dbContextFactory.CreateMySQLDbContext();
             return await context.ReceiveBox.AnyAsync(rb => rb.Id == Id);
         }
+        public async Task<bool> ExistUnreadMailBox(string email)
+        {
+            await using var context = _dbContextFactory.CreateMySQLDbContext();
+            return await context.ReceiveBox.AnyAsync(rb => rb.Receiver == email && !rb.IsRead);
+        }
     }
 }
 

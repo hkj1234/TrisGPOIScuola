@@ -9,5 +9,6 @@ namespace TrisGPOI.Core.ReceiveBox.Interfaces
         Task DeleteReceiveBox(int Id);
         Task ReadReceiveBox(int Id);
         Task<bool> ExistReceiveBox(int Id);
+        Task<bool> ExistUnreadMailBox(string email);
     }
 }

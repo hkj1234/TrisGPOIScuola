@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TrisGPOI.Database.Context;
 using TrisGPOI.Controllers.User;
 using TrisGPOI.Controllers.Tris;
-using Microsoft.AspNetCore.SignalR;
 using TrisGPOI.Core.JWT.Entities;
 using TrisGPOI.Hubs.TrisGameHub.Game;
 using TrisGPOI.Hubs.HomeHub;
 using TrisGPOI.Controllers.Friend;
+using TrisGPOI.Controllers.ReceiveBox;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,7 +88,8 @@ builder.Services
     .AddCustomer()
     .AddTrisNormale()
     .AddContext()
-    .AddFriend();
+    .AddFriend()
+    .AddReceiveBox();
 
 
 

@@ -19,6 +19,10 @@ namespace TrisGPOI.Core.ReceiveBox
         {
             return await _receiveBoxRepository.GetReceiveBox(email);
         }
+        public async Task<bool> ExistUnreadMailBox(string email)
+        {
+            return await _receiveBoxRepository.ExistUnreadMailBox(email);
+        }
         public async Task SendReceiveBox(string sender, string receiver, string title, string message)
         {
             if (! await _userRepository.ExistUser(receiver))

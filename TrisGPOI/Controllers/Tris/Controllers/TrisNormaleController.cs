@@ -9,7 +9,7 @@ using TrisGPOI.Hubs.TrisGameHub;
 namespace TrisGPOI.Controllers.Tris.Controllers
 {
     [ApiController]
-    [Route("")]
+    [Route("Tris")]
     public class TrisNormaleController : ControllerBase
     {
         private readonly IGameManager _gameManager;
