@@ -1,6 +1,7 @@
 ﻿using TrisGPOI.Core.Friend.Entities;
 using TrisGPOI.Core.Friend.Exceptions;
 using TrisGPOI.Core.Friend.Interfaces;
+using TrisGPOI.Core.ReceiveBox.Interfaces;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
 
