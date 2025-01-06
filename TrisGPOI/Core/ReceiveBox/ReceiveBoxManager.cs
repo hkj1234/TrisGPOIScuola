@@ -17,6 +17,7 @@ namespace TrisGPOI.Core.ReceiveBox
         }
         public async Task<List<DBReceiveBox>> GetReceiveBox(string email)
         {
+            await RemoveExpiredReceiveBox(email);
             return await _receiveBoxRepository.GetReceiveBox(email);
         }
         public async Task<bool> ExistUnreadMailBox(string email)
@@ -50,6 +51,10 @@ namespace TrisGPOI.Core.ReceiveBox
         public async Task<bool> ExistReceiveBox(int Id)
         {
             return await _receiveBoxRepository.ExistReceiveBox(Id);
+        }
+        private async Task RemoveExpiredReceiveBox(string email)
+        {
+            await _receiveBoxRepository.RemoveExpiredReceiveBox(email);
         }
     }
 }

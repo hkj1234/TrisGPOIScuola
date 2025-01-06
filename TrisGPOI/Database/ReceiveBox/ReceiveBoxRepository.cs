@@ -62,6 +62,13 @@ namespace TrisGPOI.Database.ReceiveBox
             await using var context = _dbContextFactory.CreateMySQLDbContext();
             return await context.ReceiveBox.AnyAsync(rb => rb.Receiver == email && !rb.IsRead);
         }
+        public async Task RemoveExpiredReceiveBox(string email)
+        {
+            await using var context = _dbContextFactory.CreateMySQLDbContext();
+            var receiveBox = await context.ReceiveBox.Where(rb => rb.Receiver == email && rb.ExpireDate < DateTime.Now).ToListAsync();
+            context.ReceiveBox.RemoveRange(receiveBox);
+            await context.SaveChangesAsync();
+        }
     }
 }
 
