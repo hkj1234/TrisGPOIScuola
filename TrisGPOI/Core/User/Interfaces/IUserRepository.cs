@@ -15,5 +15,9 @@ namespace TrisGPOI.Core.User.Interfaces
         Task ChangeUserDescription(string email, string description);
         Task ChangeUserStatus(string email, string Status);
         Task<string> GetEmailByUsername(string username);
+        Task<int> GetUserStatusNumber(string email);
+        Task AddUserStatusNumber(string email);
+        Task SubUserStatusNumber(string email);
+        Task ResetUserStatusNumber(string email);
     }
 }

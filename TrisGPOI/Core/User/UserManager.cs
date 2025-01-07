@@ -1,12 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using TrisGPOI.Core.Collection;
+using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail.Interfaces;
 using TrisGPOI.Core.OTP.Interfaces;
 using TrisGPOI.Core.User.Entities;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
-using TrisGPOI.Database.User.Entities;
 
 namespace TrisGPOI.Core.User
 {
@@ -17,13 +17,15 @@ namespace TrisGPOI.Core.User
         private readonly IMailManager _mailManager;
         private readonly IOTPManager _oTPManager;
         private readonly IUserVittorieRepository _userVittorieRepository;
-        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager, IUserVittorieRepository userVittorieRepository)
+        private readonly IHomeManager _homeManager;
+        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager, IUserVittorieRepository userVittorieRepository, IHomeManager homeManager)
         {
             _jWTManager = jWTManager;
             _userRepository = userRepository;
             _mailManager = mailManager;
             _oTPManager = oTPManager;
             _userVittorieRepository = userVittorieRepository;   
+            _homeManager = homeManager;
         }
         public async Task RegisterAsync(UserRegister model)
         {
@@ -175,41 +177,9 @@ namespace TrisGPOI.Core.User
 
             await _userRepository.ChangeUserFoto(email, foto);
         }
-
         public async Task ChangeUserStatus(string email, string status)
         {
-            string[] possibleList = new string[]
-            {
-                "Online",
-                "Offline",
-                "Playing"
-            };
-            bool passato = false;
-            for (int i = 0; i < possibleList.Length; i++)
-            {
-                if (possibleList[i] == status)
-                {
-                    passato = true;
-                }
-            }
-
-            if (!passato)
-            {
-                throw new MalformedDataException();
-            }
-
-            await _userRepository.ChangeUserStatus(email, status);
-        }
-
-        public async Task<string> GetUserStatus(string email)
-        {
-            var user = await _userRepository.FirstOrDefaultActiveUser(email);
-            if (user == null)
-            {
-                throw new NotExisitingEmailException();
-            }
-
-            return user.Status;
+            await _homeManager.ChangeUserStatus(email, status);
         }
     }
 }
