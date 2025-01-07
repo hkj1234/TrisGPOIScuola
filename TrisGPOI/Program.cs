@@ -81,7 +81,11 @@ builder.Services.AddAuthentication(options =>
 #pragma warning restore 8602, 8604
 
 //per mandare la notifica dal server al client
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(60); // Tempo massimo di inattivit¨¤ prima che il server chiuda la connessione
+    options.KeepAliveInterval = TimeSpan.FromSeconds(30); // Frequenza dei ping inviati dal server al client
+});
 
 //DE
 builder.Services
