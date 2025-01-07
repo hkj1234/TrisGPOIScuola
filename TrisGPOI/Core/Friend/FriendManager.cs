@@ -30,7 +30,7 @@ namespace TrisGPOI.Core.Friend
         {
             return await _friendRepository.GetFriendsRequestSent(email);
         }
-        public async Task SendFriendRequest(string email, string friendEmail)
+        public async Task SendFriendRequestByEmail(string email, string friendEmail)
         {
             if (!await _userRepository.ExistUser(friendEmail))
             {
@@ -45,6 +45,11 @@ namespace TrisGPOI.Core.Friend
                 throw new ExistFriendException();
             }
             await _friendRepository.SendFriendRequest(email, friendEmail);
+        }
+        public async Task SendFriendRequestByUsername(string email, string friendUsername)
+        {
+            var friendEmail = await _userRepository.GetEmailByUsername(friendUsername);
+            await SendFriendRequestByEmail(email, friendEmail);
         }
         public async Task AcceptFriendRequest(string email, string friendEmail)
         {

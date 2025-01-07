@@ -77,13 +77,13 @@ namespace TrisGPOI.Controllers.Friend.Controllers
     
         //SendFriendRequest 
         [Authorize]
-        [HttpPost("SendFriendRequest")]
-        public async Task<IActionResult> SendFriendRequest([FromBody] FriendEmailRequest friendEmailRequest)
+        [HttpPost("SendFriendRequestByEmail")]
+        public async Task<IActionResult> SendFriendRequestByEmail([FromBody] FriendEmailRequest friendEmailRequest)
         {
             try
             {
                 var email = User?.Identity?.Name;
-                await _friendManager.SendFriendRequest(email, friendEmailRequest.email);
+                await _friendManager.SendFriendRequestByEmail(email, friendEmailRequest.email);
                 return Ok();
             }
             catch (Exception e)
@@ -135,6 +135,23 @@ namespace TrisGPOI.Controllers.Friend.Controllers
             {
                 var email = User?.Identity?.Name;
                 await _friendManager.RemoveFriend(email, friendEmailRequest.email);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
+
+        //SendFriendRequestByUsername
+        [Authorize]
+        [HttpPost("SendFriendRequestByUsername")]
+        public async Task<IActionResult> SendFriendRequestByUsername([FromBody] FriendUsernameRequest friendUsernameRequest)
+        {
+            try
+            {
+                var email = User?.Identity?.Name;
+                await _friendManager.SendFriendRequestByUsername(email, friendUsernameRequest.username);
                 return Ok();
             }
             catch (Exception e)
