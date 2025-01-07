@@ -13,5 +13,9 @@
         public int GameInfinity { get; set; } = 0;
         public int VictoryUltimate { get; set; } = 0;
         public int GameUltimate { get; set; } = 0;
+
+        public int MoneyXO { get; set; } = 0;
+        public int Level { get; set; } = 1;
+        public int Experience { get; set; } = 0;
     }
 }
