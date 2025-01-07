@@ -145,6 +145,9 @@ namespace TrisGPOI.Core.User
                 GameInfinity = userStat.GameInfinity,
                 VictoryUltimate = userStat.VictoryUltimate,
                 GameUltimate = userStat.GameUltimate,
+                MoneyXO = user.MoneyXO,
+                Level = user.Level,
+                Experience = user.Experience,
             };
         }
 
