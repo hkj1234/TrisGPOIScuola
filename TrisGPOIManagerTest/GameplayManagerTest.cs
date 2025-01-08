@@ -134,7 +134,7 @@ namespace TrisGPOIManagerTesting
         [Test]
         public void GameAbandon_NoGamePlaying_ThrowsNoGamePlayingException()
         {
-            _mockGameRepository.Setup(repo => repo.SearchPlayerPlayingGame(It.IsAny<string>()))
+            _mockGameRepository.Setup(repo => repo.GetLastGame(It.IsAny<string>()))
                 .ReturnsAsync((DBGame)null);
 
             Assert.ThrowsAsync<NoGamePlayingException>(() => _gameplayManager.GameAbandon("player@example.com"));
@@ -147,20 +147,21 @@ namespace TrisGPOIManagerTesting
             {
                 Id = 1,
                 CurrentPlayer = "player@example.com",
-                Board = "XOXOXOXOX",
+                Board = "12121212-",
                 Player1 = "player@example.com",
                 Player2 = "otherplayer@example.com",
-                GameType = "Normal"
+                GameType = "Normal",
+                Winning = '-',
             };
 
-            _mockGameRepository.Setup(repo => repo.SearchPlayerPlayingGame("player@example.com"))
+            _mockGameRepository.Setup(repo => repo.GetLastGame("player@example.com"))
                 .ReturnsAsync(game);
 
-            _mockGameRepository.Setup(repo => repo.GameFinished(game.Id, '1')).ReturnsAsync("Finished");
+            _mockGameRepository.Setup(repo => repo.GameFinished(game.Id, '2')).ReturnsAsync("Ciao");
 
             await _gameplayManager.GameAbandon("player@example.com");
 
-            _mockGameRepository.Verify(repo => repo.GameFinished(game.Id, '1'), Times.Once);
+            _mockGameRepository.Verify(repo => repo.GameFinished(game.Id, '2'), Times.Once);
         }
 
         [Test]

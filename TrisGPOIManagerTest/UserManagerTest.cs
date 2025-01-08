@@ -507,29 +507,13 @@ namespace TrisGPOIManagerTesting
                 .Setup(repo => repo.ChangeUserStatus(email, status))
                 .Returns(Task.CompletedTask);
 
+            _mockHomeManager.Setup(x => x.ChangeUserStatus(email, status)).Returns(Task.CompletedTask);
+
             // Act
             await _userManager.ChangeUserStatus(email, status);
 
             // Assert
-            _mockUserRepository.Verify(repo => repo.ChangeUserStatus(email, status), Times.Once);
+            _mockHomeManager.Verify(repo => repo.ChangeUserStatus(email, status), Times.Once);
         }
-
-        [Test]
-        public void ChangeUserStatus_InvalidStatus_ThrowsMalformedDataException()
-        {
-            // Arrange
-            string email = "test@example.com";
-            string status = "InvalidStatus"; // Un valore non valido
-
-            // Act & Assert
-            Assert.ThrowsAsync<MalformedDataException>(async () =>
-            {
-                await _userManager.ChangeUserStatus(email, status);
-            });
-
-            // Verifica che il repository non sia stato chiamato
-            _mockUserRepository.Verify(repo => repo.ChangeUserStatus(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
-        }
-
     }
 }

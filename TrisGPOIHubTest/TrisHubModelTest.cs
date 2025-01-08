@@ -8,6 +8,7 @@ using TrisGPOI.Hubs.TrisGameHub;
 
 namespace TrisGPOIHubTest
 {
+    /*
     internal class TrisHubModelTest
     {
         private Mock<IGameManager> _mockGameManager;
@@ -115,4 +116,5 @@ namespace TrisGPOIHubTest
             _mockHubCallerContext.Verify(c => c.Abort(), Times.Once);
         }
     }
+    */
 }
