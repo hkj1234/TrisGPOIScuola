@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250105192329_Version0.0.3")]
-    partial class Version003
+    [Migration("20250108165016_Version0.0.2")]
+    partial class Version002
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,44 @@ namespace TrisGPOI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("TrisGPOI.Core.ReceiveBox.Entities.DBReceiveBox", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Receiver")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Sender")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReceiveBox");
+                });
 
             modelBuilder.Entity("TrisGPOI.Database.Friend.Entities.DBFriend", b =>
                 {
@@ -103,6 +141,10 @@ namespace TrisGPOI.Migrations
                     b.Property<string>("Player2")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Winning")
+                        .IsRequired()
+                        .HasColumnType("varchar(1)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Game");
@@ -125,6 +167,34 @@ namespace TrisGPOI.Migrations
                     b.ToTable("OTP");
                 });
 
+            modelBuilder.Entity("TrisGPOI.Database.Report.Entities.DBReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("ReportMessage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReportType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Report");
+                });
+
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>
                 {
                     b.Property<string>("Email")
@@ -134,12 +204,21 @@ namespace TrisGPOI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Experience")
+                        .HasColumnType("int");
+
                     b.Property<string>("FotoProfilo")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MoneyXO")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -148,6 +227,9 @@ namespace TrisGPOI.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("StatusNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .IsRequired()

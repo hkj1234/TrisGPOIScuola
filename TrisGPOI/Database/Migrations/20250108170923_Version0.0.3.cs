@@ -5,25 +5,25 @@
 namespace TrisGPOI.Migrations
 {
     /// <inheritdoc />
-    public partial class Version006 : Migration
+    public partial class Version003 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "StatusNumber",
-                table: "Users",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
+            migrationBuilder.AddColumn<string>(
+                name: "ReportTitle",
+                table: "Report",
+                type: "longtext",
+                nullable: false)
+                .Annotation("MySql:CharSet", "utf8mb4");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "StatusNumber",
-                table: "Users");
+                name: "ReportTitle",
+                table: "Report");
         }
     }
 }

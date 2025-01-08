@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250108094950_Version0.0.7")]
-    partial class Version007
+    [Migration("20250108170923_Version0.0.3")]
+    partial class Version003
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,6 +165,38 @@ namespace TrisGPOI.Migrations
                     b.HasKey("Email");
 
                     b.ToTable("OTP");
+                });
+
+            modelBuilder.Entity("TrisGPOI.Database.Report.Entities.DBReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("ReportMessage")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReportTitle")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReportType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Report");
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>

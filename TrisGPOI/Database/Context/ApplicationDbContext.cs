@@ -3,6 +3,7 @@ using TrisGPOI.Core.ReceiveBox.Entities;
 using TrisGPOI.Database.Friend.Entities;
 using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
+using TrisGPOI.Database.Report.Entities;
 using TrisGPOI.Database.User.Entities;
 
 public class ApplicationDbContext : DbContext
@@ -19,5 +20,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBFriend> Friend { get; set; }
     public DbSet<DBFriendRequest> FriendRequest { get; set; }
     public DbSet<DBReceiveBox> ReceiveBox { get; set; }
-
+    public DbSet<DBReport> Report { get; set; }
 }
