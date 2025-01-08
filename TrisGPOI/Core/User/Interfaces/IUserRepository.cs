@@ -19,5 +19,7 @@ namespace TrisGPOI.Core.User.Interfaces
         Task AddUserStatusNumber(string email);
         Task SubUserStatusNumber(string email);
         Task ResetUserStatusNumber(string email);
+        Task UpdateLastLogin(string email);
+        Task<DateTime> GetLastLogin(string email);
     }
 }

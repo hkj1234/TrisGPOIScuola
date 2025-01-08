@@ -1,5 +1,6 @@
 ﻿using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.Home.Interfaces;
+using TrisGPOI.Core.Reward.Interfaces;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
 
@@ -9,11 +10,13 @@ namespace TrisGPOI.Core.Home
     {
         private readonly IUserRepository _userRepository;
         private readonly IGameManager _gameManager;
+        private readonly IUserRewardRepository _userRewardRepository;
         internal static List<Tuple<string, Timer>> userTimers = new List<Tuple<string, Timer>>();
-        public HomeManager(IUserRepository userRepository, IGameManager gameManager)
+        public HomeManager(IUserRepository userRepository, IGameManager gameManager, IUserRewardRepository userRewardRepository)
         {
             _userRepository = userRepository;
             _gameManager = gameManager;
+            _userRewardRepository = userRewardRepository;
         }
         public async Task SetOnlineTemperaly(string email)
         {
@@ -29,6 +32,19 @@ namespace TrisGPOI.Core.Home
             TimeSpan time = TimeSpan.FromSeconds(10);
             Tuple<string, Timer> temp = new Tuple<string, Timer>(email, new Timer(OnTimerFinished, email, time, Timeout.InfiniteTimeSpan));
             userTimers.Add(temp);
+            await UpdateRewardNumberAndUpdateLastLogin(email);
+        }
+        public async Task UpdateRewardNumberAndUpdateLastLogin(string email)
+        {
+            DateTime lastLogin = await _userRepository.GetLastLogin(email);
+            DateTime utcNow = DateTime.UtcNow;
+            DateTime targetTime = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, 8, 0, 0, DateTimeKind.Utc);
+
+            if (lastLogin < targetTime)
+            {
+                await _userRewardRepository.ResetRewardRemain(email);
+            }
+
         }
         public async void OnTimerFinished(object ob)
         {
@@ -46,6 +62,7 @@ namespace TrisGPOI.Core.Home
         {
             await _userRepository.ChangeUserStatus(email, "Offline");
             await _userRepository.ResetUserStatusNumber(email);
+            await UpdateRewardNumberAndUpdateLastLogin(email);
             userTimers.RemoveAll(t => t.Item1 == email);
         }
         public async Task SetPlaying(string email)

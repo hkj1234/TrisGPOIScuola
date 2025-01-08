@@ -17,6 +17,7 @@ namespace TrisGPOIManagerTesting
         private Mock<IGameRepository> _mockGameRepository;
         private Mock<ITrisManagerFabric> _mockTrisManagerFabric;
         private Mock<ICPUManagerFabric> _mockCPUManagerFabric;
+        private Mock<IGameVictoryManager> _mockGameVictoryManager;
         private GameplayManager _gameplayManager;
 
         [SetUp]
@@ -25,7 +26,8 @@ namespace TrisGPOIManagerTesting
             _mockGameRepository = new Mock<IGameRepository>(MockBehavior.Strict);
             _mockTrisManagerFabric = new Mock<ITrisManagerFabric>(MockBehavior.Strict);
             _mockCPUManagerFabric = new Mock<ICPUManagerFabric>(MockBehavior.Strict);
-            _gameplayManager = new GameplayManager(_mockGameRepository.Object, _mockTrisManagerFabric.Object, _mockCPUManagerFabric.Object);
+            _mockGameVictoryManager = new Mock<IGameVictoryManager>(MockBehavior.Strict);
+            _gameplayManager = new GameplayManager(_mockGameRepository.Object, _mockTrisManagerFabric.Object, _mockCPUManagerFabric.Object, _mockGameVictoryManager.Object);
         }
 
         [Test]
@@ -159,7 +161,10 @@ namespace TrisGPOIManagerTesting
 
             _mockGameRepository.Setup(repo => repo.GameFinished(game.Id, '2')).ReturnsAsync("Ciao");
 
+            _mockGameVictoryManager.Setup(x => x.GameFinished(game.Player1, game.Player2, game.Player2, game.GameType)).Returns(Task.CompletedTask);
+
             await _gameplayManager.GameAbandon("player@example.com");
+
 
             _mockGameRepository.Verify(repo => repo.GameFinished(game.Id, '2'), Times.Once);
         }

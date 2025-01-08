@@ -13,11 +13,13 @@ namespace TrisGPOI.Core.Game
         private readonly IGameRepository _gameRepository;
         private readonly ITrisManagerFabric _trisManagerFabric;
         private readonly ICPUManagerFabric _cPUManagerFabric;
-        public GameplayManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric)
+        private readonly IGameVictoryManager _gameVictoryManager;
+        public GameplayManager(IGameRepository gameRepository, ITrisManagerFabric trisManagerFabric, ICPUManagerFabric cPUManagerFabric, IGameVictoryManager gameVictoryManager)
         {
             _gameRepository = gameRepository;
             _trisManagerFabric = trisManagerFabric;
             _cPUManagerFabric = cPUManagerFabric;
+            _gameVictoryManager = gameVictoryManager;
         }
 
         public async Task<BoardInfo> PlayMove(string playerEmail, int position)
@@ -49,7 +51,7 @@ namespace TrisGPOI.Core.Game
             char ris = _trisManager.CheckWin(board);
             if (ris != '-')
             {
-                await _gameRepository.GameFinished(game.Id, ris);
+                await GameFinished(game, ris);
             }
 
             //restituire il risultato del board
@@ -71,7 +73,7 @@ namespace TrisGPOI.Core.Game
                 throw new NoGamePlayingException();
             }
             char winning = playerEmail == game.Player1 ? '2' : '1';
-            await _gameRepository.GameFinished(game.Id, winning);
+            await GameFinished(game, winning);
         }
         public async Task<BoardInfo> CPUPlayMove(string playerEmail)
         {
@@ -104,7 +106,7 @@ namespace TrisGPOI.Core.Game
             char ris = _trisManager.CheckWin(board);
             if (ris != '-')
             {
-                await _gameRepository.GameFinished(game.Id, ris);
+                await GameFinished(game, ris);
             }
 
             //restituire il risultato del board
@@ -218,5 +220,12 @@ namespace TrisGPOI.Core.Game
         {
             return await _gameRepository.GetLastGame(email);
         }
+        public async Task GameFinished(DBGame game, char ris)
+        {
+            string victory = ris == '1' ? game.Player1 : game.Player2;
+            await _gameVictoryManager.GameFinished(game.Player1, game.Player2, victory, game.GameType);
+            await _gameRepository.GameFinished(game.Id, ris);
+        }
     }
 }
+

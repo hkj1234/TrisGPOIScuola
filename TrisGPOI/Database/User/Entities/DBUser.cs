@@ -17,10 +17,15 @@ namespace TrisGPOI.Database.User.Entities
         public int StatusNumber { get; set; } = 0;
         public string FotoProfilo { get; set; } = "Default";
         public string Description { get; set; } = "";
+        public DateTime LastLogin { get; set; } = DateTime.UtcNow;
+
+        //data:
 
         public int Level { get; set; } = 1;
         public int Experience { get; set; } = 0;
 
         public int MoneyXO { get; set; } = 0;
+
+        public int RewardRemain { get; set; } = 0;
     }
 }

@@ -159,5 +159,22 @@ namespace TrisGPOI.Database.User
             _context.Users.Update(User);
             await _context.SaveChangesAsync();
         }
+        public async Task UpdateLastLogin(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.LastLogin = DateTime.UtcNow;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<DateTime> GetLastLogin(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            return (await _context.Users.FirstOrDefaultAsync(x => x.Email == email)).LastLogin;
+        }
     }
 }

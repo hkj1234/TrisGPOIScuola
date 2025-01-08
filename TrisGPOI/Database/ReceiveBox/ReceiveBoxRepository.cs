@@ -26,8 +26,8 @@ namespace TrisGPOI.Database.ReceiveBox
                 Receiver = receiver,
                 Title = title,
                 Message = message,
-                Date = DateTime.Now,
-                ExpireDate = DateTime.Now.AddDays(30),
+                Date = DateTime.UtcNow,
+                ExpireDate = DateTime.UtcNow.AddDays(30),
                 IsRead = false
             });
             await context.SaveChangesAsync();
@@ -65,7 +65,7 @@ namespace TrisGPOI.Database.ReceiveBox
         public async Task RemoveExpiredReceiveBox(string email)
         {
             await using var context = _dbContextFactory.CreateMySQLDbContext();
-            var receiveBox = await context.ReceiveBox.Where(rb => rb.Receiver == email && rb.ExpireDate < DateTime.Now).ToListAsync();
+            var receiveBox = await context.ReceiveBox.Where(rb => rb.Receiver == email && rb.ExpireDate < DateTime.UtcNow).ToListAsync();
             context.ReceiveBox.RemoveRange(receiveBox);
             await context.SaveChangesAsync();
         }

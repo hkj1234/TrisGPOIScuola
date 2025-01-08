@@ -96,7 +96,8 @@ builder.Services
     .AddContext()
     .AddFriend()
     .AddReceiveBox()
-    .AddHome();
+    .AddHome()
+    .AddReward();
 
 
 
