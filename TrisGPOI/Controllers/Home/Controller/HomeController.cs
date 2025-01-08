@@ -5,7 +5,7 @@ using TrisGPOI.Core.Home.Interfaces;
 namespace TrisGPOI.Controllers.Home.Controller
 {
     [ApiController]
-    [Route("")]
+    [Route("Home")]
     public class HomeController : ControllerBase
     {
         private readonly IHomeManager _homeManager;

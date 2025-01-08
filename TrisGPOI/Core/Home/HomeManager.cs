@@ -1,4 +1,5 @@
-﻿using TrisGPOI.Core.Home.Interfaces;
+﻿using TrisGPOI.Core.Game.Interfaces;
+using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
 
@@ -7,15 +8,24 @@ namespace TrisGPOI.Core.Home
     public class HomeManager : IHomeManager
     {
         private readonly IUserRepository _userRepository;
+        private readonly IGameManager _gameManager;
         internal static List<Tuple<string, Timer>> userTimers = new List<Tuple<string, Timer>>();
-        public HomeManager(IUserRepository userRepository)
+        public HomeManager(IUserRepository userRepository, IGameManager gameManager)
         {
             _userRepository = userRepository;
+            _gameManager = gameManager;
         }
         public async Task SetOnlineTemperaly(string email)
         {
             await _userRepository.AddUserStatusNumber(email);
-            await _userRepository.ChangeUserStatus(email, "Online");
+            if (await _gameManager.SearchPlayerPlayingGameAsync(email) != null)
+            {
+                await _userRepository.ChangeUserStatus(email, "Online");
+            }
+            else
+            {
+                await _userRepository.ChangeUserStatus(email, "Playing");
+            }
             TimeSpan time = TimeSpan.FromSeconds(10);
             Tuple<string, Timer> temp = new Tuple<string, Timer>(email, new Timer(OnTimerFinished, email, time, Timeout.InfiniteTimeSpan));
             userTimers.Add(temp);
