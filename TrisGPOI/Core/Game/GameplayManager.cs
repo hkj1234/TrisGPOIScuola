@@ -65,8 +65,8 @@ namespace TrisGPOI.Core.Game
         }
         public async Task GameAbandon(string playerEmail)
         {
-            DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
-            if (game == null)
+            DBGame? game = await _gameRepository.GetLastGame(playerEmail);
+            if (game == null || game.IsFinished == true)
             {
                 throw new NoGamePlayingException();
             }

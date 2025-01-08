@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
 using Moq;
+using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail;
 using TrisGPOI.Core.Mail.Interfaces;
@@ -21,6 +22,7 @@ namespace TrisGPOIManagerTesting
         private readonly Mock<IMailManager> _mockMailManager;
         private readonly Mock<IOTPManager> _mockOTPManager;
         private readonly Mock<IUserVittorieRepository> _mockUserVittorieRepository;
+        private readonly Mock<IHomeManager> _mockHomeManager;
         private readonly UserManager _userManager;
         public UserManagerTest()
         {
@@ -29,7 +31,9 @@ namespace TrisGPOIManagerTesting
             _mockMailManager = new Mock<IMailManager>(MockBehavior.Strict);
             _mockOTPManager = new Mock<IOTPManager>(MockBehavior.Strict);
             _mockUserVittorieRepository = new Mock<IUserVittorieRepository>(MockBehavior.Strict);
-            _userManager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object, _mockUserVittorieRepository.Object);
+            _mockHomeManager = new Mock<IHomeManager>(MockBehavior.Strict);
+            _userManager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object, _mockUserVittorieRepository.Object,
+                _mockHomeManager.Object);
         }
 
         [Test]
