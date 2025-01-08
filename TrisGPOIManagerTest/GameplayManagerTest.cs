@@ -156,11 +156,11 @@ namespace TrisGPOIManagerTesting
             _mockGameRepository.Setup(repo => repo.SearchPlayerPlayingGame("player@example.com"))
                 .ReturnsAsync(game);
 
-            _mockGameRepository.Setup(repo => repo.GameFinished(game.Id)).ReturnsAsync("Finished");
+            _mockGameRepository.Setup(repo => repo.GameFinished(game.Id, '1')).ReturnsAsync("Finished");
 
             await _gameplayManager.GameAbandon("player@example.com");
 
-            _mockGameRepository.Verify(repo => repo.GameFinished(game.Id), Times.Once);
+            _mockGameRepository.Verify(repo => repo.GameFinished(game.Id, '1'), Times.Once);
         }
 
         [Test]

@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Core.Home.Interfaces;
 
 namespace TrisGPOI.Hubs.HomeHub
 {
+    //TODO: aggiornare rispetto al controller, cambiare anche i metodi cambiati nel manager
     [Authorize]
     public class HomeHub : Hub
     {
-        private readonly IUserManager _userManager;
-        public HomeHub(IUserManager customerManager)
+        private readonly IHomeManager _homeManager;
+        public HomeHub(IHomeManager homeManager)
         {
-            _userManager = customerManager;
+            _homeManager = homeManager;
         }
 
         public override async Task OnConnectedAsync()
@@ -18,11 +19,11 @@ namespace TrisGPOI.Hubs.HomeHub
             try
             {
                 var email = Context.User?.Identity?.Name;
-                var status = await _userManager.GetUserStatus(email);
+                var status = await _homeManager.GetUserStatus(email);
                 if (status == "Offline")
                 {
                     await base.OnConnectedAsync();
-                    await _userManager.ChangeUserStatus(email, "Online");
+                    await _homeManager.ChangeUserStatus(email, "Online");
                 }
                 else
                 {
@@ -40,9 +41,9 @@ namespace TrisGPOI.Hubs.HomeHub
             try
             {
                 var email = Context.User?.Identity?.Name;
-                var status = await _userManager.GetUserStatus(email);
+                var status = await _homeManager.GetUserStatus(email);
                 if (status == "Online")
-                    await _userManager.ChangeUserStatus(email, "Offline");
+                    await _homeManager.SetOffline(email);
                 await base.OnDisconnectedAsync(exception);
             }
             catch (Exception ex)

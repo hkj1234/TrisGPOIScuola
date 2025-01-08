@@ -224,7 +224,7 @@ namespace TrisGPOI.Hubs.TrisGameHub
             await info.Clients.Group(groupName).SendAsync("Winning", winner);
             await _gameVictoryManager.GameFinished(game.Player1, game.Player2, winner, _type);
 
-            await _gameManager.GameAbandon(int.Parse(groupName));
+            await _gameManager.GameAbandon(game.CurrentPlayer);
         }
     }
 }

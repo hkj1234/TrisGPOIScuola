@@ -14,6 +14,7 @@ namespace TrisGPOI.Database.User.Entities
         public string Password { get; set; } = "";
         public bool IsActive { get; set; }
         public string Status { get; set; } = "Offline";
+        public int StatusNumber { get; set; } = 0;
         public string FotoProfilo { get; set; } = "Default";
         public string Description { get; set; } = "";
 

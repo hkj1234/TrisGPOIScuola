@@ -23,6 +23,7 @@ namespace TrisGPOI.Database.Game
                 CurrentPlayer = emailPlayer1,
                 IsFinished = false,
                 LastMoveTime = DateTime.UtcNow.AddHours(1),
+                Winning = '-',
             };
             _context.Game.Add(newGame);
             await _context.SaveChangesAsync();
@@ -39,6 +40,7 @@ namespace TrisGPOI.Database.Game
                 CurrentPlayer = emailPlayer1,
                 IsFinished = false,
                 LastMoveTime = DateTime.UtcNow.AddHours(1),
+                Winning = '-',
             };
             _context.Game.Add(newGame);
             await _context.SaveChangesAsync();
@@ -91,7 +93,7 @@ namespace TrisGPOI.Database.Game
             return game;
         }
 
-        public async Task<string> GameFinished(int id)
+        public async Task<string> GameFinished(int id, char winning)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             var game = await _context.Game.FirstOrDefaultAsync(x => x.Id == id);
@@ -100,6 +102,7 @@ namespace TrisGPOI.Database.Game
                 return null;
             }
             game.IsFinished = true;
+            game.Winning = winning;
 
             _context.Game.Update(game);
             await _context.SaveChangesAsync();
@@ -122,6 +125,11 @@ namespace TrisGPOI.Database.Game
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             return await _context.Game.FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public async Task<DBGame?> GetLastGame(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            return await _context.Game.Where(x => x.Player1 == email || x.Player2 == email).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
         }
     }
 }

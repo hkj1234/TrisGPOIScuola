@@ -49,7 +49,7 @@ namespace TrisGPOI.Core.Game
             char ris = _trisManager.CheckWin(board);
             if (ris != '-')
             {
-                await _gameRepository.GameFinished(game.Id);
+                await _gameRepository.GameFinished(game.Id, ris);
             }
 
             //restituire il risultato del board
@@ -65,23 +65,14 @@ namespace TrisGPOI.Core.Game
         }
         public async Task GameAbandon(string playerEmail)
         {
-            DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
-            if (game == null)
+            DBGame? game = await _gameRepository.GetLastGame(playerEmail);
+            if (game == null || game.IsFinished == true)
             {
                 throw new NoGamePlayingException();
             }
-            await _gameRepository.GameFinished(game.Id);
+            char winning = playerEmail == game.Player1 ? '2' : '1';
+            await _gameRepository.GameFinished(game.Id, winning);
         }
-        public async Task GameAbandon(int Id)
-        {
-            var game = await SearchGameWithId(Id);
-            if (game == null)
-            {
-                throw new NoGamePlayingException();
-            }
-            await _gameRepository.GameFinished(game.Id);
-        }
-        
         public async Task<BoardInfo> CPUPlayMove(string playerEmail)
         {
             DBGame? game = await _gameRepository.SearchPlayerPlayingGame(playerEmail);
@@ -113,7 +104,7 @@ namespace TrisGPOI.Core.Game
             char ris = _trisManager.CheckWin(board);
             if (ris != '-')
             {
-                await _gameRepository.GameFinished(game.Id);
+                await _gameRepository.GameFinished(game.Id, ris);
             }
 
             //restituire il risultato del board
@@ -223,7 +214,9 @@ namespace TrisGPOI.Core.Game
         {
             return await SearchGameWithId(int.Parse(id));
         }
-
-
+        public async Task<DBGame?> GetLastGame(string email)
+        {
+            return await _gameRepository.GetLastGame(email);
+        }
     }
 }

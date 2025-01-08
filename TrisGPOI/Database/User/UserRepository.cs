@@ -118,5 +118,46 @@ namespace TrisGPOI.Database.User
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             return (await _context.Users.FirstOrDefaultAsync(x => x.Username == username)).Email;
         }
+        public async Task<int> GetUserStatusNumber(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            return (await _context.Users.FirstOrDefaultAsync(x => x.Email == email)).StatusNumber;
+        }
+        public async Task AddUserStatusNumber(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.StatusNumber++;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task SubUserStatusNumber(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.StatusNumber--;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
+        public async Task ResetUserStatusNumber(string email)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBUser? User = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            if (User == null)
+            {
+                return;
+            }
+            User.StatusNumber = 0;
+            _context.Users.Update(User);
+            await _context.SaveChangesAsync();
+        }
     }
 }
