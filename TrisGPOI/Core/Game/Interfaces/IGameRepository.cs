@@ -14,5 +14,6 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task StartJoinCPUGame(string typeGame, string emailPlayer1, string Difficult, string emptyBoard);
         Task<DBGame?> FindGameWithId(int id);
         Task<DBGame?> GetLastGame(string email);
+        Task FriendGame(string emailPlayer1, string emailPlayer2, string gameType, string emptyBoard);
     }
 }

@@ -21,4 +21,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBFriendRequest> FriendRequest { get; set; }
     public DbSet<DBReceiveBox> ReceiveBox { get; set; }
     public DbSet<DBReport> Report { get; set; }
+    public DbSet<DBGameInvite> GameInvite { get; set; }
 }

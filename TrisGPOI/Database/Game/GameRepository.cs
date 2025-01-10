@@ -60,6 +60,23 @@ namespace TrisGPOI.Database.Game
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task FriendGame(string emailPlayer1, string emailPlayer2, string gameType, string emptyBoard)
+        {
+            await using var _context = _dbContextFactory.CreateMySQLDbContext();
+            DBGame newGame = new DBGame
+            {
+                GameType = gameType,
+                Player1 = emailPlayer1,
+                Player2 = emailPlayer2,
+                Board = emptyBoard,
+                CurrentPlayer = emailPlayer1,
+                IsFinished = false,
+                LastMoveTime = DateTime.UtcNow.AddMinutes(5),
+                Winning = '-',
+            };
+            _context.Game.Add(newGame);
+            await _context.SaveChangesAsync();
+        }
         public async Task<DBGame?> SearchPlayerPlayingOrWaitingGame(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();

@@ -24,7 +24,7 @@ namespace TrisGPOI.Core.User
             _userRepository = userRepository;
             _mailManager = mailManager;
             _oTPManager = oTPManager;
-            _userVittorieRepository = userVittorieRepository;   
+            _userVittorieRepository = userVittorieRepository;
             _homeManager = homeManager;
         }
         public async Task RegisterAsync(UserRegister model)
