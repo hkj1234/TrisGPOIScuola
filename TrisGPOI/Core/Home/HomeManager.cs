@@ -23,13 +23,13 @@ namespace TrisGPOI.Core.Home
             await _userRepository.AddUserStatusNumber(email);
             if (await _gameManager.SearchPlayerPlayingGameAsync(email) != null)
             {
-                await _userRepository.ChangeUserStatus(email, "Online");
+                await ChangeUserStatus(email, "Online");
             }
             else
             {
-                await _userRepository.ChangeUserStatus(email, "Playing");
+                await ChangeUserStatus(email, "Playing");
             }
-            TimeSpan time = TimeSpan.FromSeconds(10);
+            TimeSpan time = TimeSpan.FromSeconds(15);
             Tuple<string, Timer> temp = new Tuple<string, Timer>(email, new Timer(OnTimerFinished, email, time, Timeout.InfiniteTimeSpan));
             userTimers.Add(temp);
             await UpdateRewardNumberAndUpdateLastLogin(email);
@@ -60,7 +60,7 @@ namespace TrisGPOI.Core.Home
         }
         public async Task SetOffline(string email)
         {
-            await _userRepository.ChangeUserStatus(email, "Offline");
+            await ChangeUserStatus(email, "Offline");
             await _userRepository.ResetUserStatusNumber(email);
             await UpdateRewardNumberAndUpdateLastLogin(email);
             userTimers.RemoveAll(t => t.Item1 == email);

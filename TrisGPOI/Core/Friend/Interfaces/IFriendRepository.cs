@@ -10,7 +10,7 @@ namespace TrisGPOI.Core.Friend.Interfaces
         Task<List<FriendRequestInList>> GetFriendsRequestSent(string email);
         Task SendFriendRequest(string email, string friendEmail);
         Task AcceptFriendRequest(string email, string friendEmail);
-        Task RejectFriendRequest(string email, string friendEmail); 
+        Task DeleteFriendRequest(string email, string friendEmail); 
         Task RemoveFriend(string email, string friendEmail);
         Task<bool> ExistsFriendRequest(string email, string friendEmail);
         Task<bool> ExistsFriend(string email, string friendEmail);

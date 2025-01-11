@@ -63,10 +63,10 @@ namespace TrisGPOI.Database.Friend
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task RejectFriendRequest(string email, string friendEmail)
+        public async Task DeleteFriendRequest(string email, string friendEmail)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            var friendRequest = _context.FriendRequest.FirstOrDefault(f => f.SenderEmail == friendEmail && f.ReceiverEmail == email);
+            var friendRequest = _context.FriendRequest.FirstOrDefault(f => f.SenderEmail == friendEmail && f.ReceiverEmail == email || f.SenderEmail == email && f.ReceiverEmail == friendEmail);
             if (friendRequest != null)
             {
                 _context.FriendRequest.Remove(friendRequest);
@@ -86,7 +86,7 @@ namespace TrisGPOI.Database.Friend
         public async Task<bool> ExistsFriendRequest(string email, string friendEmail)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return _context.FriendRequest.Any(f => f.SenderEmail == email && f.ReceiverEmail == friendEmail);
+            return _context.FriendRequest.Any(f => f.SenderEmail == email && f.ReceiverEmail == friendEmail || f.SenderEmail == friendEmail && f.ReceiverEmail == email);
         }
         public async Task<bool> ExistsFriend(string email, string friendEmail)
         {

@@ -40,7 +40,13 @@ namespace TrisGPOI.Controllers.Tris.Controllers
                 }
                 if (game != null)
                 {
-                    
+                    async Task<bool> CalculatePlayer2Online()
+                    {
+                        if (game.Player2.Contains('@'))
+                            return await _homeManager.GetUserStatus(game.Player2) != "Offline";
+                        else
+                            return true;
+                    }
                     gameStatus = new GameStatus
                     {
                         Id = game.Id,
@@ -48,7 +54,7 @@ namespace TrisGPOI.Controllers.Tris.Controllers
                         Player1 = game.Player1,
                         Player1Online = await _homeManager.GetUserStatus(game.Player1) != "Offline",
                         Player2 = game.Player2,
-                        Player2Online = await _homeManager.GetUserStatus(game.Player2) != "Offline",
+                        Player2Online = await CalculatePlayer2Online(),
                         Board = game.Board,
                         CurrentPlayer = game.CurrentPlayer,
                         LastMoveTime = game.LastMoveTime,

@@ -207,5 +207,21 @@ namespace TrisGPOI.Controllers.User.Controllers
                 return NotFound($"Resource not found {e.Message}");
             }
         }
+
+        //GetUserDataByEmail
+        [Authorize]
+        [HttpGet("GetUserDataByEmail")]
+        public async Task<IActionResult> GetUserDataByEmail([FromBody] GetUserDataRequest request)
+        {
+            try
+            {
+                var data = await _userManager.GetUserData(request.email);
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
     }
 }
