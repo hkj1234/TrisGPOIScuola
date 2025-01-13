@@ -22,16 +22,6 @@ namespace TrisGPOI.Database.Game
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
             return await _context.GameInvite.AnyAsync(invite => invite.InvitedEmail == email || invite.InviterEmail == email);
         }
-        public async Task<bool> AnyInviteByInviterEmail(string inviterEmail)
-        {
-            await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.GameInvite.AnyAsync(invite => invite.InviterEmail == inviterEmail);
-        }
-        public async Task<bool> AnyInviteByInvitedEmail(string invitedEmail)
-        {
-            await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.GameInvite.AnyAsync(invite => invite.InvitedEmail == invitedEmail);
-        }
         public async Task InviteGame(string inviterEmail, string invitedEmail, string gameType)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
@@ -45,25 +35,25 @@ namespace TrisGPOI.Database.Game
             await _context.GameInvite.AddAsync(newInvite);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteInvite(string invitedEmail)
+        public async Task DeleteInvite(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            var invite = await _context.GameInvite.Where(invite => invite.InvitedEmail == invitedEmail).ToListAsync();
+            var invite = await _context.GameInvite.Where(invite => invite.InvitedEmail == email || invite.InviterEmail == email).ToListAsync();
             if (invite != null)
             {
                 _context.GameInvite.RemoveRange(invite);
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task<int> GetIdByInvitedEmail(string invitedEmail)
+        public async Task<DBGameInvite> GetInvitesByInvitedEmail(string email)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.GameInvite.Where(invite => invite.InvitedEmail == invitedEmail).Select(invite => invite.Id).FirstOrDefaultAsync();
+            return await _context.GameInvite.Where(invite => invite.InvitedEmail == email).FirstOrDefaultAsync();
         }
-        public async Task<int> GetIdByInviterEmail(string inviterEmail)
+        public async Task<bool> AnyInviteByInvitedEmail(string invitedEmail)
         {
             await using var _context = _dbContextFactory.CreateMySQLDbContext();
-            return await _context.GameInvite.Where(invite => invite.InviterEmail == inviterEmail).Select(invite => invite.Id).FirstOrDefaultAsync();
+            return await _context.GameInvite.AnyAsync(invite => invite.InvitedEmail == invitedEmail);
         }
     }
 }

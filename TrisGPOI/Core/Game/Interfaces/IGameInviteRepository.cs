@@ -7,10 +7,8 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task<DBGameInvite> GetInvitesByEmail(string email);
         Task<bool> AnyInvite(string email);
         Task<bool> AnyInviteByInvitedEmail(string invitedEmail);
-        Task<bool> AnyInviteByInviterEmail(string inviterEmail);
         Task InviteGame(string inviterEmail, string invitedEmail, string gameType);
-        Task DeleteInvite(int id);
-        Task<int> GetIdByInvitedEmail(string invitedEmail);
-        Task<int> GetIdByInviterEmail(string inviterEmail);
+        Task DeleteInvite(string email);
+        Task<DBGameInvite> GetInvitesByInvitedEmail(string email);
     }
 }
