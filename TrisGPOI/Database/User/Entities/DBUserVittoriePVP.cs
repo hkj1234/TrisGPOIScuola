@@ -6,6 +6,7 @@ namespace TrisGPOI.Database.User.Entities
     public class DBUserVittoriePVP
     {
         [Key]
+        [ForeignKey(nameof(DBUser))]
         public string Email { get; set; }
 
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TrisGPOI.Core.ReceiveBox.Entities;
+using TrisGPOI.Database.ReceiveBox.Entities;
 using TrisGPOI.Core.ReceiveBox.Interfaces;
 using TrisGPOI.Database.Context;
 

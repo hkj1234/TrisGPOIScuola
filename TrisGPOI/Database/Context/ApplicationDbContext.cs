@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TrisGPOI.Core.ReceiveBox.Entities;
 using TrisGPOI.Database.Friend.Entities;
 using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
+using TrisGPOI.Database.ReceiveBox.Entities;
 using TrisGPOI.Database.Report.Entities;
 using TrisGPOI.Database.User.Entities;
 

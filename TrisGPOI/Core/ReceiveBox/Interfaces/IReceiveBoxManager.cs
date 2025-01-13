@@ -1,4 +1,4 @@
-﻿using TrisGPOI.Core.ReceiveBox.Entities;
+﻿using TrisGPOI.Database.ReceiveBox.Entities;
 
 namespace TrisGPOI.Core.ReceiveBox.Interfaces
 {

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using TrisGPOI.Core.Collection;
+using TrisGPOI.Core.Collection.Interfaces;
 using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail.Interfaces;
@@ -7,6 +8,7 @@ using TrisGPOI.Core.OTP.Interfaces;
 using TrisGPOI.Core.User.Entities;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Database.Collection.Entities;
 
 namespace TrisGPOI.Core.User
 {
@@ -18,7 +20,8 @@ namespace TrisGPOI.Core.User
         private readonly IOTPManager _oTPManager;
         private readonly IUserVittorieRepository _userVittorieRepository;
         private readonly IHomeManager _homeManager;
-        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager, IUserVittorieRepository userVittorieRepository, IHomeManager homeManager)
+        private readonly ICollectionManager _collectionManager;
+        public UserManager(IJWTManager jWTManager, IUserRepository userRepository, IMailManager mailManager, IOTPManager oTPManager, IUserVittorieRepository userVittorieRepository, IHomeManager homeManager, ICollectionManager collectionManager)
         {
             _jWTManager = jWTManager;
             _userRepository = userRepository;
@@ -26,6 +29,7 @@ namespace TrisGPOI.Core.User
             _oTPManager = oTPManager;
             _userVittorieRepository = userVittorieRepository;
             _homeManager = homeManager;
+            _collectionManager = collectionManager;
         }
         public async Task RegisterAsync(UserRegister model)
         {
@@ -160,11 +164,12 @@ namespace TrisGPOI.Core.User
 
         public async Task ChangeUserFoto(string email, string foto)
         {
-            string[] possibleList = CollectionListManager.getList();
+            //da fare, manca la verifica ecc...
+            var possibleList = await _collectionManager.GetCollectionList();
             bool passato = false;
-            for (int i = 0; i < possibleList.Length; i++)
+            foreach (DBCollection c in possibleList)
             {
-                if (possibleList[i] == foto)
+                if (c.Name == foto)
                 {
                     passato = true;
                 }

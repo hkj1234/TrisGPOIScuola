@@ -2,7 +2,7 @@
 
 namespace TrisGPOI.Core.Collection.Interfaces
 {
-    public interface ICollectionManager
+    public interface ICollectionRepository
     {
         Task<List<DBCollection>> GetCollectionList();
         Task<List<DBRarity>> GetRarityList();
