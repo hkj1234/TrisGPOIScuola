@@ -74,6 +74,26 @@ namespace TrisGPOI.Core.Game
             }
             await _gameInviteRepository.DeleteInvite(email);
         }
+        public async Task<bool> IsInvited(string email)
+        {
+            bool ris = true;
+            var invites = await GetInvitesByEmail(email);
+            if (invites == null || invites.InvitedEmail != email)
+            {
+                ris = false;
+            }
+            return ris;
+        }
+        public async Task<bool> IsInviter(string email)
+        {
+            bool ris = true;
+            var invites = await GetInvitesByEmail(email);
+            if (invites == null || invites.InviterEmail != email)
+            {
+                ris = false;
+            }
+            return ris;
+        }
     }
 }
 

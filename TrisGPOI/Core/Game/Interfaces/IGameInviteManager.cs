@@ -10,5 +10,7 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task AcceptInvite(string invitedEmail);
         Task DeclineInvite(string invitedEmail);
         Task DeleteInvite(string inviterEmail);
+        Task<bool> IsInvited(string email);
+        Task<bool> IsInviter(string email);
     }
 }

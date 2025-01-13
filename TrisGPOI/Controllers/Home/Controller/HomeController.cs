@@ -10,9 +10,11 @@ namespace TrisGPOI.Controllers.Home.Controller
     public class HomeController : ControllerBase
     {
         private readonly IHomeManager _homeManager;
-        public HomeController(IHomeManager homeManager)
+        private readonly IGameInviteManager _gameInviteManager;
+        public HomeController(IHomeManager homeManager, IGameInviteManager gameInviteManager)
         {
             _homeManager = homeManager;
+            _gameInviteManager = gameInviteManager;
         }
 
         //SetOnline
@@ -24,7 +26,14 @@ namespace TrisGPOI.Controllers.Home.Controller
             {
                 string email = User.Identity.Name;
                 await _homeManager.SetOnlineTemperaly(email);
-                return Ok();
+                var status = await _homeManager.GetUserStatus(email);
+                var isInvited = await _gameInviteManager.IsInvited(email);
+                var isInviter = await _gameInviteManager.IsInviter(email);
+                return Ok(new {
+                    Status = status,
+                    IsInvited = isInvited,
+                    IsInviter = isInviter
+                });
             }
             catch (Exception ex)
             {
