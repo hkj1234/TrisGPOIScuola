@@ -44,6 +44,10 @@ namespace TrisGPOI.Core.Friend
             {
                 throw new ExistFriendException();
             }
+            if (email == friendEmail)
+            {
+                throw new SameEmailException();
+            }
             await _friendRepository.SendFriendRequest(email, friendEmail);
         }
         public async Task SendFriendRequestByUsername(string email, string friendUsername)
@@ -65,9 +69,13 @@ namespace TrisGPOI.Core.Friend
         }
         public async Task RejectFriendRequest(string email, string friendEmail)
         {
+            await RemoveFriendRequest(email, friendEmail);
+        }
+        public async Task RemoveFriendRequest(string email, string friendEmail)
+        {
             if (await _friendRepository.ExistsFriendRequest(email, friendEmail))
             {
-                await _friendRepository.RejectFriendRequest(email, friendEmail);
+                await _friendRepository.DeleteFriendRequest(email, friendEmail);
             }
             else
             {

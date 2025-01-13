@@ -159,5 +159,22 @@ namespace TrisGPOI.Controllers.Friend.Controllers
                 return NotFound($"Resource not found {e.Message}");
             }
         }
+
+        //RemoveFriendRequest
+        [Authorize]
+        [HttpDelete("RemoveFriendRequest")]
+        public async Task<IActionResult> RemoveFriendRequest([FromBody] FriendEmailRequest friendEmailRequest)
+        {
+            try
+            {
+                var email = User?.Identity?.Name;
+                await _friendManager.RemoveFriendRequest(email, friendEmailRequest.email);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound($"Resource not found {e.Message}");
+            }
+        }
     }
 }

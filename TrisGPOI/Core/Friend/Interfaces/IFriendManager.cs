@@ -11,6 +11,7 @@ namespace TrisGPOI.Core.Friend.Interfaces
         Task SendFriendRequestByUsername(string email, string friendUsername);
         Task AcceptFriendRequest(string email, string friendEmail);
         Task RejectFriendRequest(string email, string friendEmail); 
+        Task RemoveFriendRequest(string email, string friendEmail);
         Task RemoveFriend(string email, string friendEmail);
     }
 }
