@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrisGPOI.Database.Collection.Entities;
 using TrisGPOI.Database.Friend.Entities;
 using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
@@ -22,4 +23,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBReceiveBox> ReceiveBox { get; set; }
     public DbSet<DBReport> Report { get; set; }
     public DbSet<DBGameInvite> GameInvite { get; set; }
+    public DbSet<DBCollection> Collection { get; set; }
+    public DbSet<DBRarity> Rarity { get; set; } 
+    public DbSet<DBCollectionInventory> CollectionInventory { get; set; }
 }

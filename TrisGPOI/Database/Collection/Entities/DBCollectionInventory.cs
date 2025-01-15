@@ -1,18 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TrisGPOI.Database.Collection.Entities;
 using TrisGPOI.Database.User.Entities;
 
-namespace TrisGPOI.Database.Inventory.Entities
+namespace TrisGPOI.Database.Collection.Entities
 {
-    public class DBInventory
+    public class DBCollectionInventory
     {
         [Key]
         public int ID { get; set; }
         [ForeignKey(nameof(DBUser))]
         public string Email { get; set; }
-        [ForeignKey(nameof(DBCollection))]
-        public int ItemID { get; set; }
+        //da fare
+        //[ForeignKey(nameof(DBCollection))]
+        public int CollectionID { get; set; }
         public int Quantity { get; set; }
     }
 }
