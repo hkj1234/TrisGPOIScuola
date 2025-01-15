@@ -147,6 +147,34 @@ namespace TrisGPOI.Migrations
                     b.ToTable("Game");
                 });
 
+            modelBuilder.Entity("TrisGPOI.Database.Game.Entities.DBGameInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("GameType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InvitedEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InviterEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameInvite");
+                });
+
             modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
                 {
                     b.Property<string>("Email")

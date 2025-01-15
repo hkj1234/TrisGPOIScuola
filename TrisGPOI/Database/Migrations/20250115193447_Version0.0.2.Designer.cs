@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TrisGPOI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250108165016_Version0.0.2")]
+    [Migration("20250115193447_Version0.0.2")]
     partial class Version002
     {
         /// <inheritdoc />
@@ -150,6 +150,34 @@ namespace TrisGPOI.Migrations
                     b.ToTable("Game");
                 });
 
+            modelBuilder.Entity("TrisGPOI.Database.Game.Entities.DBGameInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("GameType")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InvitedEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("InviterEmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameInvite");
+                });
+
             modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
                 {
                     b.Property<string>("Email")
@@ -186,6 +214,10 @@ namespace TrisGPOI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ReportTitle")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("ReportType")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -214,6 +246,9 @@ namespace TrisGPOI.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime>("LastLogin")
+                        .HasColumnType("datetime");
+
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
@@ -223,6 +258,9 @@ namespace TrisGPOI.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("RewardRemain")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()

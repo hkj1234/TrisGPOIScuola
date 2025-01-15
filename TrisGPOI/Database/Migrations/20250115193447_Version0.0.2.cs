@@ -33,6 +33,13 @@ namespace TrisGPOI.Migrations
                 nullable: false)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "LastLogin",
+                table: "Users",
+                type: "datetime",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
             migrationBuilder.AddColumn<int>(
                 name: "Level",
                 table: "Users",
@@ -42,6 +49,13 @@ namespace TrisGPOI.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "MoneyXO",
+                table: "Users",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "RewardRemain",
                 table: "Users",
                 type: "int",
                 nullable: false,
@@ -116,6 +130,26 @@ namespace TrisGPOI.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "GameInvite",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    InviterEmail = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InvitedEmail = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    GameType = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Date = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameInvite", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ReceiveBox",
                 columns: table => new
                 {
@@ -148,6 +182,8 @@ namespace TrisGPOI.Migrations
                     Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReportType = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReportTitle = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReportMessage = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -202,6 +238,9 @@ namespace TrisGPOI.Migrations
                 name: "FriendRequest");
 
             migrationBuilder.DropTable(
+                name: "GameInvite");
+
+            migrationBuilder.DropTable(
                 name: "ReceiveBox");
 
             migrationBuilder.DropTable(
@@ -223,11 +262,19 @@ namespace TrisGPOI.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
+                name: "LastLogin",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
                 name: "Level",
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "MoneyXO",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "RewardRemain",
                 table: "Users");
 
             migrationBuilder.DropColumn(
