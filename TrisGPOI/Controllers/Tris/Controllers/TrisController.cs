@@ -160,6 +160,7 @@ namespace TrisGPOI.Controllers.Tris.Controllers
             try
             {
                 var email = User?.Identity?.Name;
+                await _gameManager.CancelSearchGame(email);
                 await _gameManager.GameAbandon(email);
                 return Ok();
             }
