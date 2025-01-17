@@ -35,60 +35,32 @@ namespace TrisGPOI.Database.Collection
         public async Task<List<DBCollection>> GetCollectionList()
         {
             List<DBCollection> collections = JsonConvert.DeserializeObject<List<DBCollection>>(CollectionJson);
-            return await Task.FromResult(collections);
+            return collections;
         }
         public async Task<List<DBRarity>> GetRarityList()
         {
             List<DBRarity> rarities = JsonConvert.DeserializeObject<List<DBRarity>>(RaritynJson);
-            return await Task.FromResult(rarities);
+            return rarities;
         }
         public async Task<DBCollection> GetCollection(string name)
         {
             List<DBCollection> collections = JsonConvert.DeserializeObject<List<DBCollection>>(CollectionJson);
-            foreach (DBCollection c in collections)
-            {
-                if (c.Name == name)
-                {
-                    return await Task.FromResult(c);
-                }
-            }
-            return null;
+            return collections.FirstOrDefault(x => x.Name == name);
         }
         public async Task<DBRarity> GetRarity(string name)
         {
             List<DBRarity> rarities = JsonConvert.DeserializeObject<List<DBRarity>>(RaritynJson);
-            foreach (DBRarity r in rarities)
-            {
-                if (r.Name == name)
-                {
-                    return await Task.FromResult(r);
-                }
-            }
-            return null;
+            return rarities.FirstOrDefault(x => x.Name == name);
         }
         public async Task<bool> ValidateCollection(string name)
         {
             List<DBCollection> collections = JsonConvert.DeserializeObject<List<DBCollection>>(CollectionJson);
-            foreach (DBCollection c in collections)
-            {
-                if (c.Name == name)
-                {
-                    return await Task.FromResult(true);
-                }
-            }
-            return await Task.FromResult(false);
+            return collections.Any(x => x.Name == name);
         }
         public async Task<bool> ValidateRarity(string name)
         {
             List<DBRarity> rarities = JsonConvert.DeserializeObject<List<DBRarity>>(RaritynJson);
-            foreach (DBRarity r in rarities)
-            {
-                if (r.Name == name)
-                {
-                    return await Task.FromResult(true);
-                }
-            }
-            return await Task.FromResult(false);
+            return rarities.Any(x => x.Name == name);
         }
     }
 }
