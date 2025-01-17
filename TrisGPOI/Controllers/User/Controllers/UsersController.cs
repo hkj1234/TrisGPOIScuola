@@ -33,7 +33,7 @@ namespace TrisGPOI.Controllers.User.Controllers
             try
             {
                 var token = await _userManager.LoginAsync(model.ToUserLogin());
-                return Ok(new { token });
+                return Ok(token);
             }
             catch (WrongEmailOrPasswordException e)
             {

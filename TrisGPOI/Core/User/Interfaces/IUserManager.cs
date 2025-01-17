@@ -7,7 +7,7 @@ namespace TrisGPOI.Core.User.Interfaces
     {
         Task ChangeUserPassword(string email, string password);
         Task RegisterAsync(UserRegister model);
-        Task<string> LoginAsync(UserLogin model);
+        Task<UserLoginReturn> LoginAsync(UserLogin model);
         Task<string> VerifyOTP(string otp, string email);
         Task PasswordDimenticata(string email);
         Task LoginOTP(string email);

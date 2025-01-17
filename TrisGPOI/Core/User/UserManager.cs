@@ -44,7 +44,7 @@ namespace TrisGPOI.Core.User
                 await _userRepository.AddNewUserAsync(model);
             }
         }
-        public async Task<string> LoginAsync(UserLogin model)
+        public async Task<UserLoginReturn> LoginAsync(UserLogin model)
         {
             var customer = await _userRepository.FirstOrDefaultActiveUser(model.EmailOrUsername);
             if (customer == null || customer.Password != model.Password)
@@ -57,7 +57,14 @@ namespace TrisGPOI.Core.User
                 throw new AccountNotActivedException();
             }
 
-            return _jWTManager.JWTGenerate(customer.Email);
+            string jwt = _jWTManager.JWTGenerate(customer.Email);
+
+            return new UserLoginReturn
+            {
+                Token = jwt,
+                Email = customer.Email,
+                Username = customer.Username,
+            };
         }
         public async Task<string> VerifyOTP(string otp, string email)
         {
