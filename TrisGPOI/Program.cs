@@ -12,6 +12,7 @@ using TrisGPOI.Controllers.Friend;
 using TrisGPOI.Hubs.TestingHub;
 using TrisGPOI.Controllers.ReceiveBox;
 using TrisGPOI.Controllers.Home;
+using TrisGPOI.Controllers.Collection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,7 +98,8 @@ builder.Services
     .AddFriend()
     .AddReceiveBox()
     .AddHome()
-    .AddReward();
+    .AddReward()
+    .AddCollection();
 
 
 

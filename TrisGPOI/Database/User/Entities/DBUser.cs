@@ -8,13 +8,14 @@ namespace TrisGPOI.Database.User.Entities
     {
         [Key]
         public string Email { get; set; } = "";
-        [Required]
+        [Key]
         public string Username { get; set; } = "";
         [Required]
         public string Password { get; set; } = "";
         public bool IsActive { get; set; }
         public string Status { get; set; } = "Offline";
         public int StatusNumber { get; set; } = 0;
+        //da fare, da fare foreighkey
         public string FotoProfilo { get; set; } = "Default";
         public string Description { get; set; } = "";
         public DateTime LastLogin { get; set; } = DateTime.UtcNow;

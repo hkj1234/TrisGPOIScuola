@@ -1,8 +1,8 @@
-﻿using TrisGPOI.Core.ReceiveBox.Entities;
-using TrisGPOI.Core.ReceiveBox.Exceptions;
+﻿using TrisGPOI.Core.ReceiveBox.Exceptions;
 using TrisGPOI.Core.ReceiveBox.Interfaces;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Database.ReceiveBox.Entities;
 
 namespace TrisGPOI.Core.ReceiveBox
 {

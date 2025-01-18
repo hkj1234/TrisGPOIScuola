@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
 using Moq;
+using TrisGPOI.Core.Collection.Interfaces;
 using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.JWT.Interfaces;
 using TrisGPOI.Core.Mail;
@@ -11,6 +12,7 @@ using TrisGPOI.Core.User;
 using TrisGPOI.Core.User.Entities;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
+using TrisGPOI.Database.Collection.Entities;
 using TrisGPOI.Database.User.Entities;
 
 namespace TrisGPOIManagerTesting
@@ -23,6 +25,7 @@ namespace TrisGPOIManagerTesting
         private readonly Mock<IOTPManager> _mockOTPManager;
         private readonly Mock<IUserVittorieRepository> _mockUserVittorieRepository;
         private readonly Mock<IHomeManager> _mockHomeManager;
+        private readonly Mock<ICollectionManager> _mockCollectionManager;
         private readonly UserManager _userManager;
         public UserManagerTest()
         {
@@ -32,8 +35,9 @@ namespace TrisGPOIManagerTesting
             _mockOTPManager = new Mock<IOTPManager>(MockBehavior.Strict);
             _mockUserVittorieRepository = new Mock<IUserVittorieRepository>(MockBehavior.Strict);
             _mockHomeManager = new Mock<IHomeManager>(MockBehavior.Strict);
+            _mockCollectionManager = new Mock<ICollectionManager>(MockBehavior.Strict);
             _userManager = new UserManager(_mockJWTManager.Object, _mockUserRepository.Object, _mockMailManager.Object, _mockOTPManager.Object, _mockUserVittorieRepository.Object,
-                _mockHomeManager.Object);
+                _mockHomeManager.Object, _mockCollectionManager.Object);
         }
 
         [Test]
@@ -468,11 +472,22 @@ namespace TrisGPOIManagerTesting
         {
             // Arrange
             string email = "test@example.com";
-            string foto = "Collezionabile1";
+            string foto = "ValidFotoName";
+            List<DBCollection> list = new List<DBCollection>
+            {
+                new DBCollection
+                {
+                    Name = "ValidFotoName",
+                }
+            };
 
             _mockUserRepository
                 .Setup(repo => repo.ChangeUserFoto(email, foto))
                 .Returns(Task.CompletedTask);
+
+            _mockCollectionManager
+                .Setup(x => x.GetCollectionList())
+                .ReturnsAsync(list);
 
             // Act
             await _userManager.ChangeUserFoto(email, foto);
@@ -487,6 +502,17 @@ namespace TrisGPOIManagerTesting
             // Arrange
             string email = "test@example.com";
             string foto = "invalidImage";
+            List<DBCollection> list = new List<DBCollection>
+            {
+                new DBCollection
+                {
+                    Name = "ValidFotoName",
+                }
+            };
+
+            _mockCollectionManager
+                .Setup(x => x.GetCollectionList())
+                .ReturnsAsync(list);
 
             // Act & Assert
             Assert.ThrowsAsync<MalformedDataException>(async () =>
