@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TrisGPOI.Core.Collection.Entities;
 using TrisGPOI.Core.Collection.Interfaces;
 using TrisGPOI.Database.Collection.Entities;
 
@@ -14,7 +15,8 @@ namespace TrisGPOI.Database.Collection
 
         public async Task<List<DBCollectionInventory>> GetInventory(string userEmail)
         {
-            return await _context.CollectionInventory.Where(i => i.Email == userEmail).ToListAsync();
+            return await _context.CollectionInventory.Where(i => i.Email == userEmail)
+                                                    .ToListAsync();
         }
 
         public async Task addCollection(string userEmail, int collectionId, int quantity)

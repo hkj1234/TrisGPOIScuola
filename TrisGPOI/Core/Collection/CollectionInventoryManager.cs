@@ -1,4 +1,5 @@
-﻿using TrisGPOI.Core.Collection.Interfaces;
+﻿using TrisGPOI.Core.Collection.Entities;
+using TrisGPOI.Core.Collection.Interfaces;
 using TrisGPOI.Database.Collection.Entities;
 
 namespace TrisGPOI.Core.Collection
@@ -12,9 +13,17 @@ namespace TrisGPOI.Core.Collection
             _collectionInventoryRepository = collectionInventoryRepository;
             _collectionManager = collectionManager;
         }
-        public async Task<List<DBCollectionInventory>> GetInventory(string userEmail)
+        public async Task<List<CollectionInventory>> GetInventory(string userEmail)
         {
-            return await _collectionInventoryRepository.GetInventory(userEmail);
+            var inv = await _collectionInventoryRepository.GetInventory(userEmail);
+            var ris = await Task.WhenAll(inv.Select(async i => new CollectionInventory
+            {
+                Email = i.Email,
+                CollectionName = (await _collectionManager.GetCollection(i.CollectionID)).Name,
+                Quantity = i.Quantity
+            }));
+
+            return ris.ToList();
         }
         public async Task addCollection(string userEmail, string collectionName, int quantity)
         {

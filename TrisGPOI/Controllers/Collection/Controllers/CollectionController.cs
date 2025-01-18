@@ -23,7 +23,7 @@ namespace TrisGPOI.Controllers.Collection.Controllers
             {
                 var email = User.Identity.Name;
                 var collection = await _collectionInventoryRepository.GetInventory(email);
-                return Ok(collection);
+                return Ok(new { collection = collection });
             }
             catch (Exception ex)
             {

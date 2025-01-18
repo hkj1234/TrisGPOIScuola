@@ -1,4 +1,5 @@
-﻿using TrisGPOI.Database.Collection.Entities;
+﻿using TrisGPOI.Core.Collection.Entities;
+using TrisGPOI.Database.Collection.Entities;
 
 namespace TrisGPOI.Core.Collection.Interfaces
 {
