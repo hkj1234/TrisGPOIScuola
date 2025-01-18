@@ -5,6 +5,7 @@ using TrisGPOI.Database.Game.Entities;
 using TrisGPOI.Database.OTP.Entities;
 using TrisGPOI.Database.ReceiveBox.Entities;
 using TrisGPOI.Database.Report.Entities;
+using TrisGPOI.Database.Shop.Entities;
 using TrisGPOI.Database.User.Entities;
 
 public class ApplicationDbContext : DbContext
@@ -26,4 +27,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBCollection> Collection { get; set; }
     public DbSet<DBRarity> Rarity { get; set; } 
     public DbSet<DBCollectionInventory> CollectionInventory { get; set; }
+    public DbSet<DBShop> Shop { get; set; }
 }

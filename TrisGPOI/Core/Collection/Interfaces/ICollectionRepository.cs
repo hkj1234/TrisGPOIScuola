@@ -10,6 +10,6 @@ namespace TrisGPOI.Core.Collection.Interfaces
         Task<DBRarity> GetRarity(string name);
         Task<bool> ValidateCollection(string name);
         Task<bool> ValidateRarity(string name);
-        Task<DBCollection> GetCollection(int id)
+        Task<DBCollection> GetCollection(int id);
     }
 }
