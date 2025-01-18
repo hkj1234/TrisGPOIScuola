@@ -7,7 +7,6 @@ namespace TrisGPOI.Database.Collection.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Key]
         public string Name { get; set; }
         public string Description { get; set; }
         [ForeignKey(nameof(DBRarity))]

@@ -43,7 +43,7 @@ namespace TrisGPOI.Core.Collection
         {
             var inventory = await GetInventory(userEmail);
             var collection = await _collectionManager.GetCollection(collectionName);
-            var UserCollection = inventory.FirstOrDefault(i => i.CollectionID == collection.Id);
+            var UserCollection = inventory.FirstOrDefault(i => i.CollectionName == collection.Name);
             if (UserCollection == null)
             {
                 throw new Exception("Collection not found");

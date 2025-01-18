@@ -8,7 +8,6 @@ namespace TrisGPOI.Database.User.Entities
     {
         [Key]
         public string Email { get; set; } = "";
-        [Key]
         public string Username { get; set; } = "";
         [Required]
         public string Password { get; set; } = "";
