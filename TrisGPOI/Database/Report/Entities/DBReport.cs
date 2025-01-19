@@ -9,7 +9,8 @@ namespace TrisGPOI.Database.Report.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Email { get; set; }
+        [AllowNull]
+        public string Email { get; set; } = null;
         public string ReportType { get; set; }
         public string ReportTitle { get; set; }
         public string ReportMessage { get; set; }

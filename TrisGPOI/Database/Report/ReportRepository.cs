@@ -31,7 +31,7 @@ namespace TrisGPOI.Database.Report
         public async Task CreateReportAnonymous(string type, string title, string message)
         {
             await using var context = _dbContextFactory.CreateMySQLDbContext();
-            await context.Report.AddAsync(new DBReport { ReportType = type, ReportTitle = title, ReportMessage = message, ReportDate = DateTime.UtcNow });
+            await context.Report.AddAsync(new DBReport { Email = "", ReportType = type, ReportTitle = title, ReportMessage = message, ReportDate = DateTime.UtcNow });
             await context.SaveChangesAsync();
         }
         public async Task DeleteReport(int id)

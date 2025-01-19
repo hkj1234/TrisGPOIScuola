@@ -42,7 +42,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Collection");
+                    b.ToTable("Collection", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Collection.Entities.DBCollectionInventory", b =>
@@ -65,7 +65,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("CollectionInventory");
+                    b.ToTable("CollectionInventory", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Collection.Entities.DBRarity", b =>
@@ -82,7 +82,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rarity");
+                    b.ToTable("Rarity", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Friend.Entities.DBFriend", b =>
@@ -107,7 +107,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasIndex("User2Email");
 
-                    b.ToTable("Friend");
+                    b.ToTable("Friend", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Friend.Entities.DBFriendRequest", b =>
@@ -128,7 +128,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FriendRequest");
+                    b.ToTable("FriendRequest", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Game.Entities.DBGame", b =>
@@ -170,7 +170,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Game");
+                    b.ToTable("Game", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Game.Entities.DBGameInvite", b =>
@@ -198,7 +198,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameInvite");
+                    b.ToTable("GameInvite", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.OTP.Entities.DBOtpEntity", b =>
@@ -215,7 +215,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("OTP");
+                    b.ToTable("OTP", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.ReceiveBox.Entities.DBReceiveBox", b =>
@@ -253,7 +253,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReceiveBox");
+                    b.ToTable("ReceiveBox", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Report.Entities.DBReport", b =>
@@ -285,7 +285,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Report");
+                    b.ToTable("Report", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Shop.Entities.DBShop", b =>
@@ -316,7 +316,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shop");
+                    b.ToTable("Shop", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUser", b =>
@@ -367,7 +367,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.User.Entities.DBUserVittoriePVP", b =>
@@ -404,7 +404,7 @@ namespace TrisGPOI.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("UserVittoriePVP");
+                    b.ToTable("UserVittoriePVP", (string)null);
                 });
 
             modelBuilder.Entity("TrisGPOI.Database.Friend.Entities.DBFriend", b =>
