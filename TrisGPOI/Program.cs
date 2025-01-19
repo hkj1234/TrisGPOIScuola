@@ -102,7 +102,7 @@ builder.Services
     .AddHome()
     .AddReward()
     .AddReport()
-    .AddCollection();
+    .AddCollection()
     .AddCollection()
     .AddShop();
 
