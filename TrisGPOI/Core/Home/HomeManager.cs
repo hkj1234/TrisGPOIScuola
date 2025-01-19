@@ -24,7 +24,7 @@ namespace TrisGPOI.Core.Home
         public async Task SetOnlineTemperaly(string email)
         {
             await _userRepository.AddUserStatusNumber(email);
-            if (await _gameManager.SearchPlayerPlayingGameAsync(email) != null)
+            if (await _gameManager.SearchPlayerPlayingGameAsync(email) == null)
             {
                 await ChangeUserStatus(email, "Online");
             }
