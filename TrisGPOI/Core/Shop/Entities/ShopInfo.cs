@@ -2,7 +2,8 @@
 {
     public class ShopInfo
     {
-        public string CollectionId { get; set; }
+        public string CollectionName { get; set; }
+        public int CollectionId { get; set; }
         public int Amount { get; set; }
         public int Price { get; set; }
     }

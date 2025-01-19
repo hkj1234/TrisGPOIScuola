@@ -47,5 +47,20 @@ namespace TrisGPOI.Database.Shop
             }
             await context.SaveChangesAsync();
         }
+        public async Task AddShops(string email, List<ShopInfo> shopInfos)
+        {
+            using var context = _context.CreateMySQLDbContext();
+            foreach (var shopInfo in shopInfos)
+            {
+                context.Shops.Add(new DBShop
+                {
+                    Email = email,
+                    CollectionId = shopInfo.CollectionId,
+                    Amount = shopInfo.Amount,
+                    Price = shopInfo.Price
+                });
+            }
+            await context.SaveChangesAsync();
+        }
     }
 }

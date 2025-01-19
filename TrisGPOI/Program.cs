@@ -13,6 +13,7 @@ using TrisGPOI.Hubs.TestingHub;
 using TrisGPOI.Controllers.ReceiveBox;
 using TrisGPOI.Controllers.Home;
 using TrisGPOI.Controllers.Collection;
+using TrisGPOI.Controllers.Shop;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,7 +100,8 @@ builder.Services
     .AddReceiveBox()
     .AddHome()
     .AddReward()
-    .AddCollection();
+    .AddCollection()
+    .AddShop();
 
 
 
