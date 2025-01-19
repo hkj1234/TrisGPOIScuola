@@ -27,5 +27,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<DBCollection> Collection { get; set; }
     public DbSet<DBRarity> Rarity { get; set; } 
     public DbSet<DBCollectionInventory> CollectionInventory { get; set; }
-    public DbSet<DBShop> Shop { get; set; }
+    public DbSet<DBShop> Shops { get; set; }
 }

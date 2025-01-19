@@ -1,6 +1,7 @@
 ﻿using TrisGPOI.Core.Game.Interfaces;
 using TrisGPOI.Core.Home.Interfaces;
 using TrisGPOI.Core.Reward.Interfaces;
+using TrisGPOI.Core.Shop.Interfaces;
 using TrisGPOI.Core.User.Exceptions;
 using TrisGPOI.Core.User.Interfaces;
 
@@ -11,12 +12,14 @@ namespace TrisGPOI.Core.Home
         private readonly IUserRepository _userRepository;
         private readonly IGameManager _gameManager;
         private readonly IUserRewardRepository _userRewardRepository;
+        private readonly IShopManager _shopManager;
         internal static List<Tuple<string, Timer>> userTimers = new List<Tuple<string, Timer>>();
-        public HomeManager(IUserRepository userRepository, IGameManager gameManager, IUserRewardRepository userRewardRepository)
+        public HomeManager(IUserRepository userRepository, IGameManager gameManager, IUserRewardRepository userRewardRepository, IShopManager shopManager)
         {
             _userRepository = userRepository;
             _gameManager = gameManager;
             _userRewardRepository = userRewardRepository;
+            _shopManager = shopManager;
         }
         public async Task SetOnlineTemperaly(string email)
         {
@@ -42,9 +45,15 @@ namespace TrisGPOI.Core.Home
 
             if (lastLogin < targetTime)
             {
-                await _userRewardRepository.ResetRewardRemain(email);
+                await DailyUpdate(email);
             }
 
+            await _userRepository.UpdateLastLogin(email);
+        }
+        private async Task DailyUpdate(string email)
+        {
+            await _userRewardRepository.ResetRewardRemain(email);
+            await _shopManager.UpdateShops(email);
         }
         public async void OnTimerFinished(object ob)
         {

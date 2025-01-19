@@ -11,5 +11,7 @@ namespace TrisGPOI.Core.Collection.Interfaces
         Task<bool> ValidateCollection(string name);
         Task<bool> ValidateRarity(string name);
         Task<DBCollection> GetCollection(int id);
+        Task<List<DBCollection>> GetCollectionListByRarity(string rarityName);
+        Task<int> GetRarityPrice(string rarityName);
     }
 }

@@ -14,6 +14,7 @@ using TrisGPOI.Controllers.ReceiveBox;
 using TrisGPOI.Controllers.Home;
 using TrisGPOI.Controllers.Collection;
 using TrisGPOI.Controllers.Report;
+using TrisGPOI.Controllers.Shop;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,6 +103,8 @@ builder.Services
     .AddReward()
     .AddReport()
     .AddCollection();
+    .AddCollection()
+    .AddShop();
 
 
 
