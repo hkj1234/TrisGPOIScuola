@@ -9,8 +9,6 @@ namespace TrisGPOI.Database.Report.Entities
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(DBUser))]
-        [AllowNull]
         public string Email { get; set; }
         public string ReportType { get; set; }
         public string ReportTitle { get; set; }

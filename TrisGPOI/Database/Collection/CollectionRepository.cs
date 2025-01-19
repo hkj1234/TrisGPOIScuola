@@ -52,6 +52,15 @@ namespace TrisGPOI.Database.Collection
             { 'Id': 32, 'Name': 'trofeo', 'Description': '', 'RarityID': 5 }
         ]";
 
+        private readonly string CollectionPriceByRarity = @"
+        [
+            { 'Id': 1, 'RarityID': 1, 'Price': 30 }, //1 game
+            { 'Id': 2, 'RarityID': 2, 'Price': 100 }, //3 games
+            { 'Id': 3, 'RarityID': 3, 'Price': 300 }, //1 day
+            { 'Id': 4, 'RarityID': 4, 'Price': 1000 }, //3 days
+            { 'Id': 5, 'RarityID': 5, 'Price': 3000 } //10 days
+        ]";
+
         public async Task<List<DBCollection>> GetCollectionList()
         {
             List<DBCollection> collections = JsonConvert.DeserializeObject<List<DBCollection>>(CollectionJson);
@@ -86,6 +95,23 @@ namespace TrisGPOI.Database.Collection
         {
             List<DBRarity> rarities = JsonConvert.DeserializeObject<List<DBRarity>>(RaritynJson);
             return rarities.Any(x => x.Name == name);
+        }
+        public async Task<List<DBCollection>> GetCollectionListByRarity(string rarityName)
+        {
+            List<DBCollection> collections = JsonConvert.DeserializeObject<List<DBCollection>>(CollectionJson);
+            int rarityId = await GetRarityId(rarityName);
+            return collections.Where(x => x.RarityID == rarityId).ToList();
+        }
+        public async Task<int> GetRarityId(string rarityName)
+        {
+            List<DBRarity> rarities = JsonConvert.DeserializeObject<List<DBRarity>>(RaritynJson);
+            return rarities.FirstOrDefault(x => x.Name == rarityName).Id;
+        }
+        public async Task<int> GetRarityPrice(string rarityName)
+        {
+            List<DbRarityPrice> rarityPrices = JsonConvert.DeserializeObject<List<DbRarityPrice>>(CollectionPriceByRarity);
+            int rarityId = await GetRarityId(rarityName);
+            return rarityPrices.FirstOrDefault(x => x.RarityID == rarityId).Price;
         }
     }
 }

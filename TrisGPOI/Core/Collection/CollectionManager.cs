@@ -46,5 +46,15 @@ namespace TrisGPOI.Core.Collection
         {
             return await _collectionRepository.GetCollection(id);
         }
+
+        public async Task<List<DBCollection>> GetCollectionListByRarity(string rarityName)
+        {
+            return await _collectionRepository.GetCollectionListByRarity(rarityName);
+        }
+
+        public async Task<int> GetRarityPrice(string rarityName)
+        {
+            return await _collectionRepository.GetRarityPrice(rarityName);
+        }
     }
 }

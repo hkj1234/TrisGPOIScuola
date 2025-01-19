@@ -42,9 +42,13 @@ namespace TrisGPOI.Core.Home
 
             if (lastLogin < targetTime)
             {
-                await _userRewardRepository.ResetRewardRemain(email);
+                await DailyUpdate(email);
             }
 
+        }
+        private async Task DailyUpdate(string email)
+        {
+            await _userRewardRepository.ResetRewardRemain(email);
         }
         public async void OnTimerFinished(object ob)
         {
