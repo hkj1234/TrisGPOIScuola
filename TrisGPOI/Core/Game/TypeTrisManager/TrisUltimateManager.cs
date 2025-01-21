@@ -92,7 +92,7 @@ namespace TrisGPOI.Core.Game.TypeTrisManager
 
             string lastPositionString = board.Substring(board.Length - 2);
             int lastPosition = int.Parse(lastPositionString);
-            int lastSubTris = lastPosition / 9;
+            int lastSubTris = lastPosition % 9;
 
             //se il numero della posizione è maggiore di 81 o
             //la posizione è già occupata o
