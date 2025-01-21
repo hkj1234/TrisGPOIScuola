@@ -226,6 +226,11 @@ namespace TrisGPOI.Core.Game
             await _gameVictoryManager.GameFinished(game.Player1, game.Player2, victory, game.GameType);
             await _gameRepository.GameFinished(game.Id, ris);
         }
+        public async Task<bool> CheckWin(string type, string board)
+        {
+            ITrisManager _trisManager = _trisManagerFabric.CreateTrisManager(type);
+            return _trisManager.CheckWin(board) != '-';
+        }
     }
 }
 

@@ -192,16 +192,32 @@ namespace TrisGPOI.Controllers.Tris.Controllers
             }
         }
 
+        [HttpPost("CheckWin")]
+        public async Task<IActionResult> CheckWin(string board)
+        {
+            var win = await _gameManager.CheckWin("Ultimate", board);
+            return Ok(win);
+        }
+
         private async Task updateGameTimers(string email)
         {
             var game = await _gameManager.GetLastGame(email);
             if (game != null)
             {
+                // Controlla se esiste già un timer per il gioco corrente
+                if (gameTimers.TryGetValue(game.Id, out Timer existingTimer))
+                {
+                    // Ferma e rimuovi il timer precedente
+                    existingTimer.Dispose();
+                    gameTimers.Remove(game.Id);
+                }
+
                 TimeSpan timeRemaining = game.LastMoveTime - DateTime.UtcNow;
                 Timer timer = new Timer(TimeOut, game.CurrentPlayer, timeRemaining, Timeout.InfiniteTimeSpan);
                 gameTimers[game.Id] = timer;
             }
         }
+
 
         private async void TimeOut(object state)
         {

@@ -16,5 +16,6 @@ namespace TrisGPOI.Core.Game.Interfaces
         Task CancelSearchGame(string email);
         Task PlayWithCPU(string playerEmail, string type, string difficult);
         Task<DBGame?> GetLastGame(string email);
+        Task<bool> CheckWin(string type, string board);
     }
 }
