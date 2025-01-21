@@ -73,7 +73,7 @@ namespace TrisGPOI.Core.Game.TypeTrisManager
         }
         private string GetSecondPartBoard(string board)
         {
-            return board.Substring(_miniBoardLenght, _boardLenght - _miniBoardLenght);
+            return board.Substring(_miniBoardLenght, _boardLenght - _miniBoardLenght - 2);
         }
         private void checkValidPosition(string board, int position)
         {

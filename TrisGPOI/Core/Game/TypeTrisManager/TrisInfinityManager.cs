@@ -37,7 +37,7 @@ namespace TrisGPOI.Core.Game.TypeTrisManager
             // Controlla se la stringa ha una lunghezza valida
             if (board.Length != 18)
             {
-                throw new ArgumentException("The grid string must contain exactly 9 characters.");
+                throw new ArgumentException("The grid string must contain exactly 18 characters.");
             }
 
             // Definizione delle combinazioni vincenti (indici nella stringa)
