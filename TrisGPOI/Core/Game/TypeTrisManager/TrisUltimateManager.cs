@@ -10,12 +10,14 @@ namespace TrisGPOI.Core.Game.TypeTrisManager
         private readonly int _boardLenght = 92;
         public string PlayMove(string board, int position, char simbol)
         {
-            //Aggiornare la posizione al board
-            board = board.Substring(0, board.Length - 2) + position.ToString("D2");
-
+            //vedere se va bene la posizione
             var temp = board.ToCharArray();
             checkValidPosition(board, position);
-            
+
+            //Aggiornare la posizione al board
+            board = board.Substring(0, board.Length - 2) + position.ToString("D2");
+            temp = board.ToCharArray();
+
             temp[position] = simbol;
             
             return CheckWinFirstPartBoard(new string(temp));
