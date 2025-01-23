@@ -7,6 +7,7 @@ namespace TrisGPOI.Core.Collection.Interfaces
     {
         Task<List<CollectionInventory>> GetInventory(string userEmail);
         Task addCollection(string userEmail, string collectionName, int quantity);
+        Task addCollection(string userEmail, int collectionId, int quantity);
         Task removeCollection(string userEmail, string collectionName, int quantity);
         Task removeAllCollection(string userEmail, string collectionName);
         Task<bool> anyCollection(string userEmail, string collectionName);

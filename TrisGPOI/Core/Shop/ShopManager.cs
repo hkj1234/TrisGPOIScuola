@@ -11,11 +11,13 @@ namespace TrisGPOI.Core.Shop
         private readonly IShopRepository _shopRepository;
         private readonly ICollectionManager _collectionManager;
         private readonly IMoneyXOManager _moneyManager;   
-        public ShopManager(IShopRepository shopRepository, ICollectionManager collectionManager, IMoneyXOManager moneyManager)
+        private readonly ICollectionInventoryManager _collectionInventoryManager;
+        public ShopManager(IShopRepository shopRepository, ICollectionManager collectionManager, IMoneyXOManager moneyManager, ICollectionInventoryManager collectionInventoryManager)
         {
             _shopRepository = shopRepository;
             _collectionManager = collectionManager;
             _moneyManager = moneyManager;
+            _collectionInventoryManager = collectionInventoryManager;
         }
         public async Task<List<ShopInfo>> GetShops(string email)
         {
@@ -31,7 +33,8 @@ namespace TrisGPOI.Core.Shop
                 CollectionId = s.CollectionId,
                 CollectionName = collectionList.FirstOrDefault(c => c.Id == s.CollectionId)?.Name,
                 Amount = s.Amount,
-                Price = s.Price
+                Price = s.Price,
+                IsPurchased = s.Purchased
             }).ToList();
         }
         public async Task PurchasedShop(string email, int position)
@@ -46,8 +49,13 @@ namespace TrisGPOI.Core.Shop
             {
                 throw new Exception("Not enough money");
             }
+            if (shops[position].Purchased)
+            {
+                throw new Exception("Shop already purchased");
+            }
             await _shopRepository.PurchasedShop(email, position);
             await _moneyManager.RemoveMoney(email, shops[position].Price);
+            await _collectionInventoryManager.addCollection(email, shops[position].CollectionId, shops[position].Amount);
         }
         public async Task UpdateShops(string email)
         {

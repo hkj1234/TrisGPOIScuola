@@ -221,8 +221,8 @@ namespace TrisGPOI.Controllers.Tris.Controllers
 
         private async void TimeOut(object state)
         {
-            string player = (string)state;
-            await _gameManager.GameAbandon(player);
+            //string player = (string)state;
+            //await _gameManager.GameAbandon(player);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace TrisGPOI.Core.Collection
         public async Task addCollection(string userEmail, string collectionName, int quantity)
         {
             var collection = await _collectionManager.GetCollection(collectionName);
-            await _collectionInventoryRepository.addCollection(userEmail, collection.Id, quantity);
+            await addCollection(userEmail, collection.Id, quantity);
         }
         public async Task removeCollection(string userEmail, string collectionName, int quantity)
         {
@@ -55,5 +55,10 @@ namespace TrisGPOI.Core.Collection
             var collection = await _collectionManager.GetCollection(collectionName);
             return await _collectionInventoryRepository.anyCollection(userEmail, collection.Id);
         }
+        public async Task addCollection(string userEmail, int collectionId, int quantity)
+        {
+            await _collectionInventoryRepository.addCollection(userEmail, collectionId, quantity);
+        }
     }
 }
+

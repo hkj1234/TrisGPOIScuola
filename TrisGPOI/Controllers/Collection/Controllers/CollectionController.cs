@@ -8,11 +8,11 @@ namespace TrisGPOI.Controllers.Collection.Controllers
     [Route("Collection")]
     public class CollectionController : ControllerBase
     {
-        private readonly ICollectionInventoryRepository _collectionInventoryRepository;
+        private readonly ICollectionInventoryManager _collectionInventoryManager;
 
-        public CollectionController(ICollectionInventoryRepository collectionInventoryRepository)
+        public CollectionController(ICollectionInventoryManager collectionInventoryManager)
         {
-            _collectionInventoryRepository = collectionInventoryRepository;
+            _collectionInventoryManager = collectionInventoryManager;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace TrisGPOI.Controllers.Collection.Controllers
             try
             {
                 var email = User.Identity.Name;
-                var collection = await _collectionInventoryRepository.GetInventory(email);
+                var collection = await _collectionInventoryManager.GetInventory(email);
                 return Ok(new { collection = collection });
             }
             catch (Exception ex)
