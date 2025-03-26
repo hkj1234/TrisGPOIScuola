@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-aspnet-app
-  # Nessun namespace specificato qui, userà 'pcto-group-c' da Portainer
+  # Assumendo che deployi in pcto-group-c tramite Portainer
 spec:
   replicas: 1
   selector:
@@ -18,18 +18,27 @@ spec:
         # !!! RICORDATI DI CAMBIARE QUESTA IMMAGINE !!!
         image: your-registry/your-aspnet-app:latest
         ports:
-        - containerPort: 80 # Porta interna della tua app ASP.NET
+        - containerPort: 80
+        # --- INIZIO BLOCCO AGGIUNTO ---
+        resources:
+          requests:
+            memory: "64Mi"   # Esempio: Richiede almeno 64 Mebibytes di RAM
+            cpu: "100m"     # Esempio: Richiede almeno 0.1 core di CPU (100 millicores)
+          limits:
+            memory: "256Mi"  # Esempio: Limite massimo di 256 Mebibytes di RAM
+            cpu: "500m"     # Esempio: Limite massimo di 0.5 core di CPU (500 millicores)
+        # --- FINE BLOCCO AGGIUNTO ---
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: my-aspnet-service
-  # Nessun namespace specificato qui, userà 'pcto-group-c' da Portainer
+  # Assumendo che deployi in pcto-group-c tramite Portainer
 spec:
   selector:
-    app: my-aspnet-app # Deve corrispondere alle labels del template del Deployment
+    app: my-aspnet-app
   ports:
     - protocol: TCP
-      port: 80 # Porta su cui il servizio ascolta all'interno del cluster
-      targetPort: 80 # Porta del container (deve corrispondere a containerPort sopra)
+      port: 80
+      targetPort: 80
   type: ClusterIP
