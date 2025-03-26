@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-aspnet-app
+  namespace: default # Cambia se necessario
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-aspnet-app
+  template:
+    metadata:
+      labels:
+        app: my-aspnet-app
+    spec:
+      containers:
+      - name: my-aspnet-app-container
+        image: tuoregistry/tuaapp:latest # <-- METTI LA TUA IMMAGINE QUI
+        ports:
+        - containerPort: 80 # La porta esposta dal tuo container ASP.NET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-aspnet-service
+  namespace: default # Cambia se necessario
+spec:
+  selector:
+    app: my-aspnet-app
+  ports:
+    - protocol: TCP
+      port: 80 # Porta del servizio
+      targetPort: 80 # Porta del container (deve corrispondere a containerPort sopra)
+  # type: LoadBalancer # Decommenta se vuoi esporre l'app esternamente (richiede un cloud provider o MetalLB)
+  type: ClusterIP # Rende il servizio raggiungibile solo dall'interno del cluster
