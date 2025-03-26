@@ -1,8 +1,9 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-aspnet-app
-  # Assumendo che deployi in pcto-group-c tramite Portainer
+  # Non specificare il namespace qui, verrà impostato da Portainer o kubectl -n
 spec:
   replicas: 1
   selector:
@@ -11,34 +12,45 @@ spec:
   template:
     metadata:
       labels:
-        app: my-aspnet-app
+        app: my-aspnet-app # Il Service userà questa label per trovare i Pod
     spec:
+      # --- Sezione Opzionale: Decommenta e modifica se la tua immagine è PRIVATA ---
+      # imagePullSecrets:
+      # - name: <nome-del-tuo-secret-docker> # Sostituisci con il nome del secret creato
+      # --- Fine Sezione Opzionale ---
       containers:
       - name: my-aspnet-app-container
-        # !!! RICORDATI DI CAMBIARE QUESTA IMMAGINE !!!
+        # --- !!! IMPORTANTE: SOSTITUISCI CON LA TUA IMMAGINE REALE !!! ---
         image: your-registry/your-aspnet-app:latest
+        # Esempio: image: docker.io/tuousername/tuawebapp:1.0
+        # Esempio: image: tuoacr.azurecr.io/tuawebapp:v2
+        # ---------------------------------------------------------------------
         ports:
-        - containerPort: 80
-        # --- INIZIO BLOCCO AGGIUNTO ---
+        - containerPort: 80 # La porta su cui la tua app ASP.NET ascolta DENTRO il container
         resources:
+          # --- Richieste di risorse (obbligatorie dalla quota) ---
+          # --- Modifica questi valori in base alle necessità della tua app! ---
           requests:
-            memory: "64Mi"   # Esempio: Richiede almeno 64 Mebibytes di RAM
-            cpu: "100m"     # Esempio: Richiede almeno 0.1 core di CPU (100 millicores)
+            memory: "64Mi"   # Esempio: Minimo RAM richiesta
+            cpu: "100m"     # Esempio: Minimo CPU richiesta (0.1 core)
+          # --- Limiti massimi di risorse (obbligatori dalla quota) ---
+          # --- Modifica questi valori! Devono essere >= requests ---
           limits:
-            memory: "256Mi"  # Esempio: Limite massimo di 256 Mebibytes di RAM
-            cpu: "500m"     # Esempio: Limite massimo di 0.5 core di CPU (500 millicores)
-        # --- FINE BLOCCO AGGIUNTO ---
+            memory: "256Mi"  # Esempio: Massimo RAM consentita
+            cpu: "500m"     # Esempio: Massimo CPU consentita (0.5 core)
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: my-aspnet-service
-  # Assumendo che deployi in pcto-group-c tramite Portainer
+  # Non specificare il namespace qui, verrà impostato da Portainer o kubectl -n
 spec:
   selector:
-    app: my-aspnet-app
+    app: my-aspnet-app # Deve corrispondere esattamente a spec.template.metadata.labels del Deployment
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: ClusterIP
+      port: 80 # La porta su cui il servizio ascolterà all'INTERNO del cluster Kubernetes
+      targetPort: 80 # La porta sul POD (definita in containerPort) a cui il servizio inoltrerà il traffico
+  type: ClusterIP # Rende il servizio accessibile solo dall'interno del cluster (altri Pod/Servizi)
+                 # Usa LoadBalancer o NodePort se devi esporlo all'esterno (potrebbe richiedere configurazioni aggiuntive)
+---
