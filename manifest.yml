@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-aspnet-app
-  namespace: default # Cambia se necessario
+  namespace: pcto-group-c # Cambia se necessario
 spec:
   replicas: 1
   selector:
