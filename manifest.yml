@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-aspnet-app
+  # Nessun namespace specificato qui, userà 'pcto-group-c' da Portainer
 spec:
   replicas: 1
   selector:
@@ -14,21 +15,21 @@ spec:
     spec:
       containers:
       - name: my-aspnet-app-container
-        image: tuoregistry/tuaapp:latest # <-- METTI LA TUA IMMAGINE QUI
+        # !!! RICORDATI DI CAMBIARE QUESTA IMMAGINE !!!
+        image: your-registry/your-aspnet-app:latest
         ports:
-        - containerPort: 80 # La porta esposta dal tuo container ASP.NET
+        - containerPort: 80 # Porta interna della tua app ASP.NET
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: my-aspnet-service
-  namespace: default # Cambia se necessario
+  # Nessun namespace specificato qui, userà 'pcto-group-c' da Portainer
 spec:
   selector:
-    app: my-aspnet-app
+    app: my-aspnet-app # Deve corrispondere alle labels del template del Deployment
   ports:
     - protocol: TCP
-      port: 80 # Porta del servizio
+      port: 80 # Porta su cui il servizio ascolta all'interno del cluster
       targetPort: 80 # Porta del container (deve corrispondere a containerPort sopra)
-  # type: LoadBalancer # Decommenta se vuoi esporre l'app esternamente (richiede un cloud provider o MetalLB)
-  type: ClusterIP # Rende il servizio raggiungibile solo dall'interno del cluster
+  type: ClusterIP
